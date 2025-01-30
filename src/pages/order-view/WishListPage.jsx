@@ -5,7 +5,7 @@ import { removeFromWishlist } from "../../reducer/wishlistSlice"; // Import the 
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
-import "./WishlistPage.css"; // Optional: Add your styles here
+import "./WishListPage.css"
 
 const WishlistPage = () => {
   const dispatch = useDispatch();
