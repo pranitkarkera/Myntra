@@ -1,0 +1,23 @@
+.navbar {
+  background-color: white; 
+}
+
+.navbar-brand, .nav-link {
+    font-family: 'Assistant', sans-serif;
+}
+
+.profile-icon {
+    font-weight: 700; 
+    font-size: 20px;
+}
+
+.wishlist-icon {
+    font-weight: 700; 
+    font-size: 20px; 
+}
+
+.bag-icon {
+    font-weight: 700;
+    font-size: 20px;
+
+}

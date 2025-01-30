@@ -1,0 +1,12 @@
+/* index.css */
+body {
+    font-family: 'Assistant', sans-serif; /* Apply the Assistant font globally */
+    margin: 0; /* Optional: Reset default margin */
+    padding: 0; /* Optional: Reset default padding */
+    box-sizing: border-box; /* Optional: Set box-sizing */
+    padding-top: 100px; /* Adjust based on your navbar height */
+}
+
+* {
+    box-sizing: inherit; /* Optional: Inherit box-sizing for all elements */
+}

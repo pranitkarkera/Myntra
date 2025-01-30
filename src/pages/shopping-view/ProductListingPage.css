@@ -1,0 +1,52 @@
+
+.hover-effect {
+  transition: transform 0.3s, box-shadow 0.3s; 
+}
+
+.hover-effect:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+}
+
+.card {
+  position: relative;
+}
+
+.rating-overlay {
+  position: absolute;
+  top: 300px;
+  left: 10px; 
+  background-color: rgba(255, 255, 255, 0.7); 
+  padding: 5px; 
+  border-radius: 5px; 
+  font-weight: bold;
+  color: #333;
+  z-index: 1; 
+}
+
+.wishlist-overlay {
+  position: absolute;
+  top: 300px;
+  right: 10px; 
+  background-color: rgba(255, 255, 255, 0.7); 
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 4px;
+  border-radius: 30px; 
+  /* font-weight: bold; */
+  border: 1px;
+  font-size: larger;
+  z-index: 1; 
+}
+
+.addtobag-overlay {
+  position: absolute;
+  top: 435px;
+  right: 10px; 
+  /* background-color: rgba(255, 255, 255, 0.7);  */
+  padding: 5px; 
+  border-radius: 5px; 
+  background-color: #FF3E6C;
+  color: white;
+  z-index: 1; 
+}

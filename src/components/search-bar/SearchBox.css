@@ -1,0 +1,23 @@
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px; /* Adjust as needed */
+    color: #888; /* Change color as needed */
+    font-weight: lighter;
+    font-size: large;
+}
+
+.search-input {
+    padding-left: 70px; /* Add padding to prevent text from overlapping with the icon */
+    padding-bottom: 5px;
+    width: 400px; /* Adjust width as needed */
+    height: 50px; /* Adjust height as needed */
+    border: 0px;
+    border-radius: 4px; /* Add border radius for rounded corners */
+    background-color: #F5F5F6;
+}
