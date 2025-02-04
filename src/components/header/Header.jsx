@@ -1,26 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import SearchBox from "../search-bar/SearchBox";
 import { CiUser } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { PiHandbag } from "react-icons/pi";
 import "./Header.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../reducer/searchSlice";
 
 const Header = () => {
-    const dispatch = useDispatch();
-    
-    const handleSearch = (e) => {
-      const searchValue = e.target.value.toLowerCase();
-      dispatch(setSearchTerm(searchValue))
-    }
+  const dispatch = useDispatch();
+
+  // Get the counts from the Redux store
+  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const bagItems = useSelector((state) => state.shoppingBag.items);
+  const email = useSelector((state) => state.user.email); // Assuming user ID is stored in the user slice
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value.toLowerCase();
+    dispatch(setSearchTerm(searchValue));
+  };
 
   return (
     <header>
       <nav className="navbar navbar-expand-lg fixed-top bs-light">
         <div className="container-fluid ms-2">
-          <Link className="navbar-brand" to="/">
+          <Link className="navbar-brand" to="/homepage">
             <img
               src="https://constant.myntassets.com/web/assets/img/icon.5d108c858a0db793700f0be5d3ad1e120a01a500_2021.png"
               alt="Myntra-Logo"
@@ -78,23 +83,47 @@ const Header = () => {
 
               <div className="d-flex align-items-center">
                 <SearchBox onSearch={handleSearch} />
-                <ul className="navbar-nav d-flex flex-row mt-2 px-3">
+                <ul className="navbar-nav d-flex flex-row mt-2 px-3 align-items-center">
                   <li className="nav-item text-center mx-2">
-                    <CiUser className="profile-icon" />
-                    <Link className="nav-link active fw-bolder" to="#">
-                      Profile
+                    {email ? (
+                      <Link
+                        className="nav-link active fw-bolder"
+                        to={`/profile-page/${email}`}
+                      >
+                        <CiUser className="profile-icon" />
+                        <p className="mb-0">Profile</p>
+                      </Link>
+                    ) : (
+                      <span className="nav-link active fw-bolder disabled">
+                        <CiUser className="profile-icon" />
+                        <p className="mb-0">Profile</p>
+                      </span>
+                    )}
+                  </li>
+                  <li className="nav-item text-center mx-2">
+                    <Link
+                      className="nav-link active fw-bolder"
+                      to="/wishlist-page"
+                    >
+                      <CiHeart className="wishlist-icon" />
+                      {wishlistItems.length > 0 && (
+                        <span className="badge bg-danger ms-1">
+                          {wishlistItems.length}
+                        </span>
+                      )}
+                      <p className="mb-0">Wishlist</p>
                     </Link>
                   </li>
                   <li className="nav-item text-center mx-2">
-                    <CiHeart className="wishlist-icon" />
-                    <Link className=" nav-link active fw-bolder" to="/wishlist-page">
-                      Wishlist
-                    </Link>
-                  </li>
-                  <li className="nav-item text-center mx-2">
-                    <PiHandbag className="bag-icon" />
-                    <Link className="nav-link active fw-bolder" to="/addtobag-page">
-                      Bag
+                    <Link className="nav-link active fw-bolder" to="/checkout">
+                      <PiHandbag className="bag-icon" />
+                      {bagItems.length > 0 && (
+                        <span className="badge bg-danger ms-1">
+                          {" "}
+                          {bagItems.length}
+                        </span>
+                      )}
+                      <p className="mb-0">Bag</p>
                     </Link>
                   </li>
                 </ul>

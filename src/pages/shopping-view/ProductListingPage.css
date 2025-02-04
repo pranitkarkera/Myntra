@@ -14,7 +14,7 @@
 
 .rating-overlay {
   position: absolute;
-  top: 300px;
+  top: 400px;
   left: 10px; 
   background-color: rgba(255, 255, 255, 0.7); 
   padding: 5px; 
@@ -26,7 +26,7 @@
 
 .wishlist-overlay {
   position: absolute;
-  top: 300px;
+  top: 400px;
   right: 10px; 
   background-color: rgba(255, 255, 255, 0.7); 
   padding-left: 8px;

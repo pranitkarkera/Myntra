@@ -1,15 +1,17 @@
-// src/pages/ProductListingPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchAllProducts } from "../../reducer/productSlice";
+import { fetchAllProducts, setSortOrder } from "../../reducer/productSlice";
 import { fetchAllCategories } from "../../reducer/categoriesSlice";
-import { addToWishlist, removeFromWishlist } from "../../reducer/wishlistSlice"; // Import the actions
-import { addToBag } from "../../reducer/shoppingBagSlice"; // Import the addToBag action
+import { addToWishlist, removeFromWishlist } from "../../reducer/wishlistSlice";
+import { addToBag } from "../../reducer/shoppingBagSlice";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ProductListingPage.css";
 import CategoryFilterComponent from "../../components/filter/CategoryFilterComponent";
 import RatingFilterComponent from "../../components/filter/RatingFilterComponent";
+import PriceFilterComponent from "../../components/filter/PriceFilterComponent";
+import PriceSliderComponent from "../../components/filter/PriceSliderComponent";
+import { setPriceRange } from "../../reducer/productSlice";
 import { FaHeart } from "react-icons/fa";
 
 const ProductListingPage = () => {
@@ -22,9 +24,10 @@ const ProductListingPage = () => {
   } = useSelector((state) => state.shoppingProducts);
   const categories = useSelector((state) => state.categories.categories);
   const searchTerm = useSelector((state) => state.search.searchTerm);
+  const sortOrder = useSelector((state) => state.shoppingProducts.sortOrder);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
-  const [resetFilters, setResetFilters] = useState(false);
+  const priceRange = useSelector((state) => state.shoppingProducts.priceRange);
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -43,43 +46,47 @@ const ProductListingPage = () => {
     const matchesRating =
       selectedRating === null || product.rating >= selectedRating;
 
-    return matchesSearchTerm && matchesCategory && matchesRating;
+    const matchesPriceRange =
+      product.price >= priceRange.min && product.price <= priceRange.max;
+
+    return matchesSearchTerm && matchesCategory && matchesRating && matchesPriceRange;
   });
 
-  const handleCategoryChange = (categories) => {
-    setSelectedCategories(categories);
-  };
+  console.log("Filtered Products:", filteredProducts);
 
-  const handleRatingChange = (rating) => {
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    return sortOrder === "lowToHigh" ? a.price - b.price : b.price - a.price;
+  });
+
+  const handleCategoryChange = useCallback((categories) => {
+    setSelectedCategories(categories);
+  }, []);
+
+  const handleRatingChange = useCallback((rating) => {
     setSelectedRating(rating);
-  };
+  }, []);
 
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedRating(null);
-    setResetFilters(true);
+    dispatch(setSortOrder("lowToHigh"))
+    dispatch(setPriceRange({ min: 100, max: 10000 }));
   };
 
-  useEffect(() => {
-    if (resetFilters) {
-      setResetFilters(false);
-    }
-  }, [resetFilters]);
-
   const handleToggleWishlist = (event, product) => {
-    event.stopPropagation(); // Prevent the click from bubbling up to the Link
+    event.stopPropagation();
     const existingItem = wishlistItems.find(
       (item) => item.productId === product.productId
     );
     if (existingItem) {
-      dispatch(removeFromWishlist(product)); // Remove from wishlist if it exists
+      dispatch(removeFromWishlist(product));
     } else {
-      dispatch(addToWishlist(product)); // Add to wishlist if it doesn't exist
+      dispatch(addToWishlist(product));
     }
   };
 
   const handleAddToBag = (product) => {
-    dispatch(addToBag(product)); // Dispatch the action to add to bag
+    dispatch(addToBag(product));
   };
 
   return (
@@ -87,64 +94,70 @@ const ProductListingPage = () => {
       <h3>Filter</h3>
       <hr />
       <div className="row">
-        <div className="col">
+        <div className=" col">
           <CategoryFilterComponent
             categories={categories}
             onCategoryChange={handleCategoryChange}
-            reset={resetFilters}
           />
           <hr />
-          <RatingFilterComponent
-            onRatingChange={handleRatingChange}
-            reset={resetFilters}
-          />
+          <RatingFilterComponent onRatingChange={handleRatingChange} />
+          <hr />
+          <PriceFilterComponent />
+          <hr />
+          <PriceSliderComponent />
           <button className="btn btn-secondary mt-3" onClick={clearFilters}>
             Clear Filters
           </button>
         </div>
         <div className="col-md-9">
-          {loading && (
-            <div className="text-center">
-              <span className="visually-hidden">Loading products...</span>
+          {loading}
+          {error && (
+            <div>
+              <p className="text-danger">Error: {error}</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => dispatch(fetchAllProducts())}
+              >
+                Retry
+              </button>
             </div>
           )}
-          {error && <p className="text-danger">Error: {error}</p>}
           <div className="row">
-            {Array.isArray(filteredProducts) && filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? (
+              sortedProducts.map((product) => (
                 <div className="col-md-3 mb-4" key={product.productId}>
                   <div className="card hover-effect position-relative">
-                    <Link
-                      to={`/products/${product.productId}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <img
-                        src={product.images[0]}
-                        className="card-img-top"
-                        alt={product.productName || "Product image"}
-                      />
-                    </Link>
-                    <div className="rating-overlay">
-                      {product.rating.toFixed(1)}
-                    </div>
-                    <button
-                      className="wishlist-overlay"
-                      onClick={(event) => handleToggleWishlist(event, product)}
-                      style={{
-                        background: "lightgrey",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <FaHeart
-                        color={
-                          wishlistItems.find(
-                            (item) => item.productId === product.productId
-                          )
-                            ? "#FF3E6C"
-                            : "grey"
+                    <div>
+                      <Link
+                        to={`/products/${product.productId}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <img
+                          src={product.images[0]}
+                          className="card-img-top"
+                          alt={product.productName || "Product image"}
+                        />
+                      </Link>
+                      <div className="rating-overlay">
+                        {product.rating.toFixed(1)}
+                      </div>
+                      <button
+                        className="wishlist-overlay"
+                        onClick={(event) =>
+                          handleToggleWishlist(event, product)
                         }
-                      />
-                    </button>
+                      >
+                        <FaHeart
+                          color={
+                            wishlistItems.find(
+                              (item) => item.productId === product.productId
+                            )
+                              ? "#FF3E6C"
+                              : "grey"
+                          }
+                        />
+                      </button>
+                    </div>
                     <div className="card-body">
                       <h5 className="card-title fw-bold">
                         {product.brandName}
@@ -155,7 +168,7 @@ const ProductListingPage = () => {
                       </p>
                       <button
                         className="btn btn-primary"
-                        onClick={() => handleAddToBag(product)} // Add to bag button
+                        onClick={() => handleAddToBag(product)}
                       >
                         Add to Bag
                       </button>

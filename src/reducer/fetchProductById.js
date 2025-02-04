@@ -17,7 +17,7 @@ export const fetchProductById = createAsyncThunk(
       const response = await axios.get(
         `https://myntra-clone-backend-nine.vercel.app/api/products/${productId}`
       );
-      console.log(response.data.data.product)
+      // console.log(response.data.data.product)
       return response.data.data.product; // Return the products array
     } catch (error) {
       throw new Error(

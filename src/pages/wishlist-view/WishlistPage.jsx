@@ -1,13 +1,13 @@
-
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromWishlist } from "../../reducer/wishlistSlice"; // Import the action
+import { addToBag } from "../../reducer/shoppingBagSlice"; // Import the action
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
-import "./WishListPage.css"
+import "./WishlistPage.css";
 
-const WishListPage = () => {
+const WishlistPage = () => {
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
@@ -15,11 +15,22 @@ const WishListPage = () => {
     dispatch(removeFromWishlist(product));
   };
 
+  const handleMoveToBag = (product) => {
+    dispatch(addToBag(product)); // Add the product to the bag
+    handleRemoveFromWishlist(product); // Remove the product from the wishlist
+  };
+
   return (
     <div className="container">
+      <Link to="/register">Register</Link>
+      <br />
+      <Link to="/login">Login</Link>
       {wishlistItems.length === 0 ? (
         <div className="text-center py-5 my-5">
-          <img src="https://img.icons8.com/?size=100&id=6AT50ANS7K0O&format=png&color=000000" className="mb-4"/>
+          <img
+            src="https://img.icons8.com/?size=100&id=6AT50ANS7K0O&format=png&color=000000"
+            className="mb-4"
+          />
           <h2 className="fw-bolder pb-3">YOUR WISHLIST IS EMPTY</h2>
           <p className="text-muted fs-5 pb-4">
             Add items that you like to your wishlist. Review them anytime and
@@ -64,7 +75,7 @@ const WishListPage = () => {
                 </div>
                 <button
                   className="btn btn-light text-danger fw-bolder py-3"
-                  onClick={() => handleRemoveFromWishlist(product)}
+                  onClick={() => handleMoveToBag(product)} // Call the new function
                 >
                   MOVE TO BAG
                 </button>
@@ -77,4 +88,4 @@ const WishListPage = () => {
   );
 };
 
-export default WishListPage;
+export default WishlistPage;
