@@ -85,7 +85,6 @@ const Header = () => {
                 <SearchBox onSearch={handleSearch} />
                 <ul className="navbar-nav d-flex flex-row mt-2 px-3 align-items-center">
                   <li className="nav-item text-center mx-2">
-                    {email ? (
                       <Link
                         className="nav-link active fw-bolder"
                         to={`/profile-page/${email}`}
@@ -93,12 +92,6 @@ const Header = () => {
                         <CiUser className="profile-icon" />
                         <p className="mb-0">Profile</p>
                       </Link>
-                    ) : (
-                      <span className="nav-link active fw-bolder disabled">
-                        <CiUser className="profile-icon" />
-                        <p className="mb-0">Profile</p>
-                      </span>
-                    )}
                   </li>
                   <li className="nav-item text-center mx-2">
                     <Link

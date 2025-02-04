@@ -22,9 +22,7 @@ const WishlistPage = () => {
 
   return (
     <div className="container">
-      <Link to="/register">Register</Link>
-      <br />
-      <Link to="/login">Login</Link>
+
       {wishlistItems.length === 0 ? (
         <div className="text-center py-5 my-5">
           <img
