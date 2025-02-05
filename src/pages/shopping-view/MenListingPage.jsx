@@ -139,7 +139,7 @@ const MenListingPage = () => {
               sortedProducts.map((product) => (
                 <div className="col-md-3 mb-4" key={product.productId}>
                   <div className="card hover-effect position-relative">
-                    <div>
+                    <div className="position-relative">
                       <Link
                         to={`/products/${product.productId}`}
                         style={{ textDecoration: "none" }}

@@ -89,9 +89,6 @@ const RegisterProfilePage = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label">
-              Confirm Password
-            </label>
             <input
               type="password"
               className="form-control"
