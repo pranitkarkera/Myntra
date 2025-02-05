@@ -27,6 +27,7 @@ const ProductListingPage = () => {
   const sortOrder = useSelector((state) => state.shoppingProducts.sortOrder);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
+  const [resetFilters, setResetFilters] = useState(false);
   const priceRange = useSelector((state) => state.shoppingProducts.priceRange);
 
   useEffect(() => {
@@ -69,9 +70,16 @@ const ProductListingPage = () => {
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedRating(null);
+    setResetFilters(true);
     dispatch(setSortOrder("lowToHigh"))
     dispatch(setPriceRange({ min: 100, max: 10000 }));
   };
+
+  useEffect(() => {
+    if (resetFilters) {
+      setResetFilters(false);
+    }
+  }, [resetFilters]);
 
   const handleToggleWishlist = (event, product) => {
     event.stopPropagation();
@@ -100,7 +108,10 @@ const ProductListingPage = () => {
             onCategoryChange={handleCategoryChange}
           />
           <hr />
-          <RatingFilterComponent onRatingChange={handleRatingChange} />
+          <RatingFilterComponent
+            onRatingChange={handleRatingChange}
+            reset={resetFilters}
+          />
           <hr />
           <PriceFilterComponent />
           <hr />

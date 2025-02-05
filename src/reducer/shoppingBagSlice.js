@@ -7,6 +7,9 @@ const shoppingBagSlice = createSlice({
     items: [],
   },
   reducers: {
+    clearBag: (state) => {
+      state.items = [];
+    },
     addToBag: (state, action) => {
       const existingItem = state.items.find(
         (item) => item.productId === action.payload.productId
@@ -25,9 +28,6 @@ const shoppingBagSlice = createSlice({
         (item) => item.productId !== action.payload.productId
       );
     },
-    clearBag: (state) => {
-      state.items = [];
-    },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const item = state.items.find((item) => item.productId === id);
@@ -41,6 +41,6 @@ const shoppingBagSlice = createSlice({
   },
 });
 
-export const { addToBag, removeFromBag, clearBag, updateQuantity, updateSize } =
+export const { addToBag, removeFromBag, updateQuantity, updateSize, clearBag } =
   shoppingBagSlice.actions;
 export default shoppingBagSlice.reducer;

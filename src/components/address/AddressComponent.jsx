@@ -29,7 +29,7 @@ const AddressComponent = ({ onAddressAdded }) => {
       state: "",
       country: "",
       zipCode: "",
-      addressType: "Home", // Reset to default
+      addressType: "Home",
       default: false,
     });
     setShowForm(true);
@@ -64,6 +64,7 @@ const AddressComponent = ({ onAddressAdded }) => {
       await dispatch(addAddress(address)).unwrap();
       setSubmittedAddress(address);
       setShowForm(false);
+      onAddressAdded(); // Call the callback to indicate address has been added
     } catch (err) {
       setError(err.message);
       console.error("Failed to add address:", err);
@@ -73,7 +74,6 @@ const AddressComponent = ({ onAddressAdded }) => {
   };
 
   const handleRemove = () => {
-    // Reset the address state to initial values
     setAddress({
       name: "",
       number: "",
@@ -82,7 +82,7 @@ const AddressComponent = ({ onAddressAdded }) => {
       state: "",
       country: "",
       zipCode: "",
-      addressType: "Home", // Reset to default
+      addressType: "Home",
       default: false,
     });
     setSubmittedAddress(null);
@@ -92,7 +92,7 @@ const AddressComponent = ({ onAddressAdded }) => {
   const handleEdit = () => {
     setAddress((prev) => ({
       ...prev,
-      addressType: "Home", // Reset to default when editing
+      addressType: "Home",
     }));
     setShowForm(true);
   };
@@ -198,7 +198,7 @@ const AddressComponent = ({ onAddressAdded }) => {
         </form>
       ) : (
         <div className="card p-3">
-          <h5 className="fw-bold">Select Delivery Address</h5>
+          <h5 className="fw-bold ">Select Delivery Address</h5>
           <div className="border p-3 rounded mb-3">
             <input type="radio" checked={true} readOnly className="me-2" />
             <strong>{submittedAddress.name}</strong>

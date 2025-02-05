@@ -1,21 +1,29 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AddressComponent from "../../components/address/AddressComponent";
 import AddToBagComponent from "../../components/addtobag/AddtobagComponent";
 import { Link } from "react-router-dom";
+import { clearBag } from "../../reducer/shoppingBagSlice"; // Import the clearBag action
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const CheckoutPage = () => {
+  const dispatch = useDispatch();
   const bagItems = useSelector((state) => state.shoppingBag.items);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [addressAdded, setAddressAdded] = useState(false);
 
   const handlePlaceOrder = () => {
     setIsPlacingOrder(true);
   };
 
   const handleContinue = () => {
+    if (!addressAdded) {
+      alert("Please add an address before continuing.");
+      return;
+    }
     setOrderPlaced(true);
+    dispatch(clearBag()); // Clear the bag after placing the order
   };
 
   const totalMRP = bagItems.reduce(
@@ -66,11 +74,6 @@ const CheckoutPage = () => {
         </div>
       ) : (
         <div className="row">
-          <h2>
-            Your Shopping Bag ({bagItems.length} Item
-            {bagItems.length !== 1 ? "s" : ""})
-          </h2>
-
           {orderPlaced ? (
             <div className="text-center py-5">
               <h2 className="fw-bold text-success">Order Successful!</h2>
@@ -81,8 +84,14 @@ const CheckoutPage = () => {
             </div>
           ) : isPlacingOrder ? (
             <>
+              <h2>
+                Your Shopping Bag ({bagItems.length} Item
+                {bagItems.length !== 1 ? "s" : ""})
+              </h2>
               <div className="col-md-6">
-                <AddressComponent onAddressAdded={() => {}} />
+                <AddressComponent
+                  onAddressAdded={() => setAddressAdded(true)}
+                />
               </div>
               <div className="col-md-6">
                 <div className="card p-3">

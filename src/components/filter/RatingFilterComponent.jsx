@@ -9,7 +9,7 @@ const RatingFilterComponent = ({ onRatingChange, reset }) => {
       setSelectedRating(null); // Reset internal state when reset prop is triggered
       onRatingChange(null); // Notify parent component of reset
     }
-  }, [reset]);
+  }, [reset, onRatingChange]);
 
   const handleRatingSelect = (rating) => {
     setSelectedRating(rating);

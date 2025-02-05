@@ -10,10 +10,8 @@ const GenderBasedSlider = () => {
           <Link to="/men-listing-page">
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051054/glif-run-outputs/xaywngrqt95lgutluiar.jpg"
-              height="500px"
-              width="1000px"
               alt="Men's Collection"
-              className="img-fluid"
+              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
             />
           </Link>
         </Carousel.Item>
@@ -21,10 +19,8 @@ const GenderBasedSlider = () => {
           <Link to="/women-listing-page">
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051026/glif-run-outputs/ljzjnnjpomvhlq2fi6zb.jpg"
-              height="500px"
-              width="1000px"
               alt="Women's Collection"
-              className="img-fluid"
+              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
             />
           </Link>
         </Carousel.Item>
@@ -32,10 +28,8 @@ const GenderBasedSlider = () => {
           <Link to="/kids-listing-page">
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051501/glif-run-outputs/zvxdyebqdmkugp4ad6vh.jpg"
-              height="500px"
-              width="1000px"
               alt="Kid's Collection"
-              className="img-fluid"
+              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
             />
           </Link>
         </Carousel.Item>

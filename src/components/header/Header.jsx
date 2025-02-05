@@ -5,6 +5,7 @@ import { CiUser } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { PiHandbag } from "react-icons/pi";
 import "./Header.css";
+import MyntraLogo from "../../assets/myntra-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../reducer/searchSlice";
 
@@ -14,7 +15,7 @@ const Header = () => {
   // Get the counts from the Redux store
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const bagItems = useSelector((state) => state.shoppingBag.items);
-  const email = useSelector((state) => state.user.email); // Assuming user ID is stored in the user slice
+  const email = useSelector((state) => state.user.email);
 
   const handleSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
@@ -23,14 +24,14 @@ const Header = () => {
 
   return (
     <header>
-      <nav className="navbar navbar-expand-lg fixed-top bs-light">
-        <div className="container-fluid ms-2">
+      <nav className="navbar navbar-expand-lg bg-white fixed-top">
+        <div className="container-fluid">
           <Link className="navbar-brand" to="/homepage">
             <img
-              src="https://constant.myntassets.com/web/assets/img/icon.5d108c858a0db793700f0be5d3ad1e120a01a500_2021.png"
+              src={MyntraLogo}
               alt="Myntra-Logo"
-              width="70"
-              height="70"
+              width="55"
+              height="55"
             />
           </Link>
           <button
@@ -45,9 +46,9 @@ const Header = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <div className="d-flex justify-content-between align-items-center w-100">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-wrap">
-                <li className="nav-item mx-3">
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center w-100">
+              <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-wrap justify-content-center">
+                <li className="nav-item mx-2">
                   <Link
                     className="nav-link active fw-bolder"
                     to="/men-listing-page"
@@ -55,7 +56,7 @@ const Header = () => {
                     MEN
                   </Link>
                 </li>
-                <li className="nav-item mx-3">
+                <li className="nav-item mx-2">
                   <Link
                     className="nav-link active fw-bolder"
                     to="/women-listing-page"
@@ -63,7 +64,7 @@ const Header = () => {
                     WOMEN
                   </Link>
                 </li>
-                <li className="nav-item mx-3">
+                <li className="nav-item mx-2">
                   <Link
                     className="nav-link active fw-bolder"
                     to="/kids-listing-page"
@@ -71,27 +72,32 @@ const Header = () => {
                     KIDS
                   </Link>
                 </li>
-                <li className="nav-item mx-3">
+                <li className="nav-item mx-2">
                   <Link
                     className="nav-link active fw-bolder"
                     to="/product-listing-page"
                   >
-                    All
+                    ALL
                   </Link>
                 </li>
               </ul>
 
-              <div className="d-flex align-items-center">
-                <SearchBox onSearch={handleSearch} />
-                <ul className="navbar-nav d-flex flex-row mt-2 px-3 align-items-center">
+              <div className="d-flex align-items-center mt-2 mt-lg-0 flex-wrap">
+                <div
+                  className="me-2"
+                  style={{ flex: "1 1 auto", minWidth: "200px" }}
+                >
+                  <SearchBox onSearch={handleSearch} />
+                </div>
+                <ul className="navbar-nav d-flex flex-row align-items-center">
                   <li className="nav-item text-center mx-2">
-                      <Link
-                        className="nav-link active fw-bolder"
-                        to={`/profile-page/${email}`}
-                      >
-                        <CiUser className="profile-icon" />
-                        <p className="mb-0">Profile</p>
-                      </Link>
+                    <Link
+                      className="nav-link active fw-bolder"
+                      to={`/profile-page/${email}`}
+                    >
+                      <CiUser className="profile-icon" />
+                      <p className="mb-0">Profile</p>
+                    </Link>
                   </li>
                   <li className="nav-item text-center mx-2">
                     <Link
@@ -112,7 +118,6 @@ const Header = () => {
                       <PiHandbag className="bag-icon" />
                       {bagItems.length > 0 && (
                         <span className="badge bg-danger ms-1">
-                          {" "}
                           {bagItems.length}
                         </span>
                       )}
