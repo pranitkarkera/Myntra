@@ -15,7 +15,7 @@ const LoginProfilePage = () => {
     dispatch(loginUser(credentials))
       .unwrap()
       .then((userData) => {
-        console.log("User data after login:", userData.user.email); // Log user data
+        console.log("User  data after login:", userData.user.email); // Log user data
         alert("Login successful!");
         navigate(`/profile-page/${userData.user.email}`);
       })
@@ -30,49 +30,49 @@ const LoginProfilePage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Login Profile</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary mx-2"
-          onClick={handleGuestLogin}
-        >
-          Login as Guest
-        </button>
-        <p>
-          Don't have an account? <Link to="/">Register</Link>
-        </p>
-      </form>
+    <div className="container mt-5 d-flex justify-content-center">
+      <div className="col-md-4 col-sm-6">
+        {" "}
+        {/* Adjust the column size here */}
+        <h2 className="text-center">Login Profile</h2>
+        <form onSubmit={handleSubmit} className="p-4 border rounded shadow mb-5">
+          <div className="mb-3">
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              placeholder="Email*"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              placeholder="Password*"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary w-100">
+            Login
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary w-100 mt-2"
+            onClick={handleGuestLogin}
+          >
+            Login as Guest
+          </button>
+          <p className="text-center mt-3">
+            Don't have an account? <Link to="/">Register</Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
