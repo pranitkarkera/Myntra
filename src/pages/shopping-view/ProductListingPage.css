@@ -5,39 +5,44 @@
 
 .hover-effect:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+  transition: transform 0.3s ease;
 }
 
 .card {
   position: relative;
 }
 
-.rating-overlay {
+.card-img-top {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rating-overlay,
+.wishlist-overlay {
   position: absolute;
-  top: 400px;
-  left: 10px; 
-  background-color: rgba(255, 255, 255, 0.7); 
-  padding: 5px; 
-  border-radius: 5px; 
-  font-weight: bold;
-  color: #333;
-  z-index: 1; 
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-overlay {
+  left: 5px;
+  bottom: 5px;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 .wishlist-overlay {
-  position: absolute;
-  top: 400px;
-  right: 10px; 
-  background-color: rgba(255, 255, 255, 0.7); 
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-bottom: 4px;
-  border-radius: 30px; 
-  /* font-weight: bold; */
-  border: 1px;
-  font-size: larger;
-  z-index: 1; 
+  right: 5px;
+  bottom: 5px;
+  border-radius: 5px;
+  border: none;
+  padding: 8px;
 }
+
 
 .addtobag-overlay {
   position: absolute;
