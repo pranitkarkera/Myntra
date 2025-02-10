@@ -13,6 +13,7 @@ import PriceFilterComponent from "../../components/filter/PriceFilterComponent";
 import PriceSliderComponent from "../../components/filter/PriceSliderComponent";
 import { setPriceRange } from "../../reducer/productSlice";
 import { FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const WomenListingPage = () => {
   const dispatch = useDispatch();

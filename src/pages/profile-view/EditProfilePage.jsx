@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserByEmail, updateUser  } from "../../reducer/userSlice"; // Import the actions
+import { toast } from "react-toastify";
 
 const EditProfilePage = () => {
   const { email } = useParams(); // Get the email from the URL
@@ -31,11 +32,11 @@ const EditProfilePage = () => {
     dispatch(updateUser (updatedUser )) // Dispatch update user action
       .unwrap()
       .then(() => {
-        alert("Profile updated successfully!");
+        toast.success("Profile updated successfully!");
         navigate(`/profile-page/${email}`); // Redirect to the profile page
       })
       .catch((err) => {
-        alert(err.message || "Failed to update profile.");
+        toast.error(err.message || "Failed to update profile.");
       });
   };
 

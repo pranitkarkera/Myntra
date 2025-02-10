@@ -64,7 +64,8 @@ const AddressComponent = ({ onAddressAdded }) => {
       await dispatch(addAddress(address)).unwrap();
       setSubmittedAddress(address);
       setShowForm(false);
-      onAddressAdded(); // Call the callback to indicate address has been added
+      console.log("Address added successfully!");
+      onAddressAdded();
     } catch (err) {
       setError(err.message);
       console.error("Failed to add address:", err);

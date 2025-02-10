@@ -13,6 +13,7 @@ import PriceFilterComponent from "../../components/filter/PriceFilterComponent";
 import PriceSliderComponent from "../../components/filter/PriceSliderComponent";
 import { setPriceRange } from "../../reducer/productSlice";
 import { FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const KidsListingPage = () => {
   const dispatch = useDispatch();
@@ -95,13 +96,16 @@ const KidsListingPage = () => {
     );
     if (existingItem) {
       dispatch(removeFromWishlist(product));
+      toast.error("Item removed from wishlist");
     } else {
       dispatch(addToWishlist(product));
+      toast.success("Item added to wishlist");
     }
   };
 
   const handleAddToBag = (product) => {
     dispatch(addToBag(product));
+    toast.success("Item added  to wishlist");
   };
 
   return (

@@ -5,6 +5,7 @@ import { addToBag } from "../../reducer/shoppingBagSlice"; // Import the action
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
 import "./WishlistPage.css";
 
 const WishlistPage = () => {
@@ -12,12 +13,16 @@ const WishlistPage = () => {
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
   const handleRemoveFromWishlist = (product) => {
-    dispatch(removeFromWishlist(product));
+    dispatch(
+      removeFromWishlist(product)
+    );
+    toast.error("Item removed from wishlist");
   };
 
   const handleMoveToBag = (product) => {
     dispatch(addToBag(product)); // Add the product to the bag
     handleRemoveFromWishlist(product); // Remove the product from the wishlist
+    toast.success("Item moved to bag");
   };
 
   return (

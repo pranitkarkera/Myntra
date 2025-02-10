@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserByEmail, deleteUser, logout } from "../../reducer/userSlice";
 import { FaUserCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ProfilePage = () => {
   const { email } = useParams();
@@ -21,17 +22,18 @@ const ProfilePage = () => {
       dispatch(deleteUser(email))
         .unwrap()
         .then(() => {
-          alert("Account deleted successfully!");
+          toast.success("Account deleted successfully!");
           navigate("/login");
         })
         .catch((err) => {
-          alert(err.message || "Failed to delete account.");
+          toast.error(err.message || "Failed to delete account.");
         });
     }
   };
 
   const handleLogout = () => {
     dispatch(logout());
+    toast.success("Logout successfully!");
     navigate("/login");
   };
 

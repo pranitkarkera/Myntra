@@ -8,6 +8,7 @@ import { FaRupeeSign } from "react-icons/fa";
 import { Carousel } from "react-bootstrap";
 import { addToBag } from "../../reducer/shoppingBagSlice";
 import { addToWishlist, removeFromWishlist } from "../../reducer/wishlistSlice";
+import { toast } from "react-toastify";
 
 const ProductViewCardPage = () => {
   const { productId } = useParams(); // Get the product ID from the URL
@@ -31,8 +32,10 @@ const ProductViewCardPage = () => {
     );
     if (existingItem) {
       dispatch(removeFromWishlist(product));
+      toast.error("Item removed from wishlist");
     } else {
       dispatch(addToWishlist(product));
+      toast.success("Item added to wishlist");
     }
   };
 
@@ -40,6 +43,7 @@ const ProductViewCardPage = () => {
     if (selectedSize) {
       console.log("Adding to bag:", { ...product, selectedSize });
       dispatch(addToBag({ ...product, selectedSize })); // Pass selected size with product
+      toast.success("Item added to bag");
     } else {
       alert("Please select a size before adding to bag."); // Alert if no size is selected
     }

@@ -6,6 +6,7 @@ import {
   updateSize,
 } from "../../reducer/shoppingBagSlice";
 import { addToWishlist } from "../../reducer/wishlistSlice";
+import { toast } from "react-toastify";
 
 const AddToBagComponent = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const AddToBagComponent = () => {
 
   const handleRemoveFromBag = (product) => {
     dispatch(removeFromBag(product));
+    toast.error("Item removed from bag");
   };
 
   const handleQuantityChange = (id, event) => {
@@ -29,6 +31,7 @@ const AddToBagComponent = () => {
   const moveToWishlist = (product) => {
     dispatch(removeFromBag(product));
     dispatch(addToWishlist(product));
+    toast.error("Item moved to wishlist");
   };
 
   const totalMRP = bagItems.reduce(

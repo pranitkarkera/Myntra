@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../reducer/userSlice"; // Import the action
+import { toast } from "react-toastify";
 
 const LoginProfilePage = () => {
   const dispatch = useDispatch();
@@ -16,16 +17,17 @@ const LoginProfilePage = () => {
       .unwrap()
       .then((userData) => {
         console.log("User  data after login:", userData.user.email); // Log user data
-        alert("Login successful!");
+        toast.success("Login successful!");
         navigate(`/profile-page/${userData.user.email}`);
       })
       .catch((err) => {
-        alert(err.message || "Login failed.");
+        toast.error(err.message || "Login failed.");
       });
   };
 
   const handleGuestLogin = () => {
     // Redirect to homepage as a guest user
+    toast.success("Logged in as a guest!");
     navigate("/homepage");
   };
 

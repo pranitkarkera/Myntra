@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import AddressComponent from "../../components/address/AddressComponent";
 import AddToBagComponent from "../../components/addtobag/AddtobagComponent";
 import { Link } from "react-router-dom";
-import { clearBag } from "../../reducer/shoppingBagSlice"; // Import the clearBag action
+import { clearBag } from "../../reducer/shoppingBagSlice";
+import {toast} from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const CheckoutPage = () => {
@@ -18,12 +19,17 @@ const CheckoutPage = () => {
   };
 
   const handleContinue = () => {
+    console.log("Address Added State:", addressAdded);
     if (!addressAdded) {
-      alert("Please add an address before continuing.");
+      toast.error("Please add an address before continuing.");
       return;
     }
+    setIsPlacingOrder(false);
     setOrderPlaced(true);
-    dispatch(clearBag()); // Clear the bag after placing the order
+    setTimeout(() => {
+      dispatch(clearBag());
+      toast.success("Order placed successfully!");
+    }, 10000);
   };
 
   const totalMRP = bagItems.reduce(
@@ -90,7 +96,9 @@ const CheckoutPage = () => {
               </h2>
               <div className="col-md-6">
                 <AddressComponent
-                  onAddressAdded={() => setAddressAdded(true)}
+                  onAddressAdded={() => {
+                  console.log("Address added callback received in CheckoutPage!");    
+                  setAddressAdded(true)}}
                 />
               </div>
               <div className="col-md-6">
