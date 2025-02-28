@@ -22,10 +22,10 @@ export const loginUser = createAsyncThunk(
         "https://myntra-clone-backend-nine.vercel.app/api/user/login",
         credentials
       );
-      console.log("Login response:", response.data); // Log the response
+      console.log("Login response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Login error:", error.response?.data); // Log the error
+      console.error("Login error:", error.response?.data);
       return rejectWithValue(error.response?.data || "Login failed");
     }
   }
@@ -41,7 +41,7 @@ export const fetchUserByEmail = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.error("Fetch user error:", error.response?.data); // Log the error
+      console.error("Fetch user error:", error.response?.data);
       return rejectWithValue(error.response?.data || "Failed to fetch user");
     }
   }
@@ -56,7 +56,7 @@ export const updateUser  = createAsyncThunk(
         `https://myntra-clone-backend-nine.vercel.app/api/user/${updatedUser.email}`,
         updatedUser 
       );
-      return response.data; // Return the updated user data
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to update user"
@@ -73,7 +73,7 @@ export const deleteUser  = createAsyncThunk(
       const response = await axios.delete(
         `https://myntra-clone-backend-nine.vercel.app/api/user/${email}`
       );
-      return response.data; // Return the success message or user ID
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete user"
@@ -86,7 +86,7 @@ export const deleteUser  = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null, // User data
+    user: null,
     loading: false,
     error: null,
   },
@@ -105,7 +105,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserByEmail.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload; // Set the user data
+        state.user = action.payload;
       })
       .addCase(fetchUserByEmail.rejected, (state, action) => {
         state.loading = false;
@@ -117,7 +117,7 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = null; // Clear the user data after deletion
+        state.user = null;
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;

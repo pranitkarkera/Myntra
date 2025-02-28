@@ -1,12 +1,39 @@
-/* index.css */
+/* Ensures full height structure */
+html, body, #root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content pushes the footer down */
+main {
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* Footer appears at the bottom of the page */
+footer {
+  width: 100%;
+  position: relative; /* Keeps it in document flow */
+  bottom: 0;
+}
+
+/* Fixed footer for specific pages */
+.fixed-footer {
+  position: fixed !important;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Optional: Styling for a consistent layout */
 body {
-    font-family: 'Assistant', sans-serif; /* Apply the Assistant font globally */
-    margin: 0; /* Optional: Reset default margin */
-    padding: 0; /* Optional: Reset default padding */
-    box-sizing: border-box; /* Optional: Set box-sizing */
-    padding-top: 100px; /* Adjust based on your navbar height */
+    font-family: 'Assistant', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    padding-top: 100px; /* Adjust based on navbar height */
 }
 
 * {
-    box-sizing: inherit; /* Optional: Inherit box-sizing for all elements */
+    box-sizing: inherit;
 }

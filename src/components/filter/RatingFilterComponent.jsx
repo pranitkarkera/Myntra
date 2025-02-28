@@ -6,8 +6,8 @@ const RatingFilterComponent = ({ onRatingChange, reset }) => {
 
   useEffect(() => {
     if (reset) {
-      setSelectedRating(null); // Reset internal state when reset prop is triggered
-      onRatingChange(null); // Notify parent component of reset
+      setSelectedRating(null);
+      onRatingChange(null);
     }
   }, [reset, onRatingChange]);
 

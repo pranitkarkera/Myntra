@@ -46,10 +46,10 @@ const ProfilePage = () => {
       <div className="container py-5 mt-5 mb-5 text-center">
         <h3>You don't have an account.</h3>
         <div className="mt-5">
-          <Link to="/" className="btn btn-primary mx-2">
+          <Link to="/" className="btn btn-primary btn-sm mx-2">
             Register
           </Link>
-          <Link to="/login" className="btn btn-secondary mx-2">
+          <Link to="/login" className="btn btn-secondary btn-sm mx-2">
             Login
           </Link>
         </div>
@@ -65,20 +65,47 @@ const ProfilePage = () => {
         <div className="col-md-2 text-center">
           <FaUserCircle style={{ fontSize: "100px" }} />
         </div>
-        <div className="col-md-6 text-center">
+        <div className="col-md-6 d-flex flex-column align-items-start">
           <p className="fs-4 text-muted">Name: {user.name}</p>
           <p className="fs-4 text-muted">Email: {user.email}</p>
         </div>
-        <div className="col-md-4 d-flex flex-column gap-2">
-          <Link to={`/edit-profile/${email}`}>
-            <button className="btn btn-primary w-100">Edit Profile</button>
-          </Link>
-          <button className="btn btn-warning w-100" onClick={handleLogout}>
-            Logout
-          </button>
-          <button className="btn btn-danger w-100" onClick={handleDeleteUser}>
-            Delete Account
-          </button>
+        <div className="col-md-4 d-flex justify-content-end">
+          <div className="d-flex flex-column align-items-start gap-2">
+            <Link to={`/edit-profile/${email}`}>
+              <button
+                className="btn btn-primary custom-btn-sm"
+                style={{
+                  maxWidth: "150px", // Set a max width
+                  padding: "5px 10px", // Adjust padding
+                  fontSize: "12px", // Adjust font size
+                }}
+              >
+                Edit Profile
+              </button>
+            </Link>
+            <button
+              className="btn btn-warning custom-btn-sm"
+              style={{
+                maxWidth: "150px", // Set a max width
+                padding: "5px 10px", // Adjust padding
+                fontSize: "12px", // Adjust font size
+              }}
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+            <button
+              className="btn btn-danger custom-btn-sm"
+              style={{
+                maxWidth: "150px", // Set a max width
+                padding: "5px 10px", // Adjust padding
+                fontSize: "12px", // Adjust font size
+              }}
+              onClick={handleDeleteUser}
+            >
+              Delete Account
+            </button>
+          </div>
         </div>
       </div>
     </div>

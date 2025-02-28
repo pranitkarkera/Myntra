@@ -39,10 +39,7 @@ function App() {
           <Route path="/" element={<RegisterProfilePage />} />
           <Route path="/login" element={<LoginProfilePage />} />
           <Route path="/profile-page/:email" element={<ProfilePage />} />
-          <Route
-            path="/edit-profile/:email"
-            element={<EditProfilePage />}
-          />
+          <Route path="/edit-profile/:email" element={<EditProfilePage />} />
         </Routes>
         <Footer />
       </div>

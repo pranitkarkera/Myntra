@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../../reducer/fetchProductById"; // Adjust the import based on your structure
+import { fetchProductById } from "../../reducer/fetchProductById";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdStar } from "react-icons/io";
 import { FaRupeeSign } from "react-icons/fa";
@@ -9,24 +9,31 @@ import { Carousel } from "react-bootstrap";
 import { addToBag } from "../../reducer/shoppingBagSlice";
 import { addToWishlist, removeFromWishlist } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
+import { setSize } from "../../reducer/sizeSlice";
 
 const ProductViewCardPage = () => {
-  const { productId } = useParams(); // Get the product ID from the URL
+  const { productId } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.productById.product); // Adjust based on your state structure
+  const product = useSelector((state) => state.productById.product);
   const loading = useSelector((state) => state.productById.loading);
   const error = useSelector((state) => state.productById.error);
   const wishlistItems = useSelector((state) => state.wishlist.items);
-
-  const [selectedSize, setSelectedSize] = useState(null); // State to track selected size
+  const selectedSize = useSelector((state) => state.size.selectedSize);
 
   useEffect(() => {
-    dispatch(fetchProductById(productId)); // Fetch product details by ID
+    dispatch(fetchProductById(productId));
   }, [dispatch, productId]);
+
+  useEffect(() => {
+    dispatch(setSize(null)); // Reset selected size when visiting a new product
+  }, [product, dispatch]);
+
+  const handleSizeSelect = (size) => {
+    dispatch(setSize(size));
+  };
 
   const handleToggleWishlist = (event) => {
     event.stopPropagation();
-    console.log("Toggling wishlist for product:", product);
     const existingItem = wishlistItems.find(
       (item) => item.productId === product.productId
     );
@@ -40,13 +47,9 @@ const ProductViewCardPage = () => {
   };
 
   const handleAddToBag = () => {
-    if (selectedSize) {
-      console.log("Adding to bag:", { ...product, selectedSize });
-      dispatch(addToBag({ ...product, selectedSize })); // Pass selected size with product
-      toast.success("Item added to bag");
-    } else {
-      alert("Please select a size before adding to bag."); // Alert if no size is selected
-    }
+    const sizeToAdd = selectedSize || "S";
+    dispatch(addToBag({ ...product, selectedSize: sizeToAdd }));
+    toast.success("Item added to bag");
   };
 
   if (loading) {
@@ -74,7 +77,6 @@ const ProductViewCardPage = () => {
     );
   }
 
-  // Check if product is defined and has images
   if (!product || !product.images) {
     return (
       <div className="text-danger text-center">
@@ -126,12 +128,14 @@ const ProductViewCardPage = () => {
           <hr />
           <h3 className="fw-bolder">
             <FaRupeeSign className="fs-4 mb-1" />
-            {price} <span className="fw-normal text-muted fs-4">MRP</span>{" "}
+            {price} <span className="fw-normal text-muted fs-4">MRP</span>
             <span className="fw-normal text-muted text-decoration-line-through fs-4">
-              Rs. {originalPrice}
-            </span>{" "}
+              {" "}
+              Rs. {originalPrice}{" "}
+            </span>
             <span className="fw-normal text-warning fs-4">
-              ({discountPercent}%) OFF
+              {" "}
+              ({discountPercent}%) OFF{" "}
             </span>
           </h3>
           <p className="text-success fw-semibold fs-6">
@@ -147,7 +151,7 @@ const ProductViewCardPage = () => {
               }`}
               style={{ width: "40px", height: "40px", margin: "5px" }}
               key={e}
-              onClick={() => setSelectedSize(e)}
+              onClick={() => handleSizeSelect(e)}
             >
               {e}
             </button>
@@ -159,7 +163,7 @@ const ProductViewCardPage = () => {
             onClick={handleAddToBag}
           >
             Add to Bag
-          </button>{" "}
+          </button>
           <button
             className="btn border"
             style={{ flex: "50%" }}

@@ -1,4 +1,3 @@
-// src/reducer/shoppingBagSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const shoppingBagSlice = createSlice({
@@ -17,8 +16,8 @@ const shoppingBagSlice = createSlice({
       if (!existingItem) {
         const newItem = {
           ...action.payload,
-          quantity: 1, // Default quantity
-          selectedSize: action.payload.size[0], // Default to the first size
+          quantity: action.payload.quantity || 1,
+          selectedSize: action.payload.selectedSize || "S",
         };
         state.items.push(newItem);
       }

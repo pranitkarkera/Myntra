@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../reducer/userSlice"; // Import the action
+import { loginUser } from "../../reducer/userSlice";
 import { toast } from "react-toastify";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 const LoginProfilePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,12 +20,13 @@ const LoginProfilePage = () => {
     dispatch(loginUser(credentials))
       .unwrap()
       .then((userData) => {
-        console.log("User  data after login:", userData.user.email); // Log user data
+        console.log("User data after login:", userData.user.email);
         toast.success("Login successful!");
         navigate(`/profile-page/${userData.user.email}`);
       })
       .catch((err) => {
-        toast.error(err.message || "Login failed.");
+        setErrorMessage(err.message || "Login failed.");
+        setShowErrorModal(true); // Show the error modal
       });
   };
 
@@ -31,13 +36,20 @@ const LoginProfilePage = () => {
     navigate("/homepage");
   };
 
+  const handleCloseModal = () => {
+    setShowErrorModal(false);
+    setErrorMessage("");
+  };
+
   return (
     <div className="container mt-5 d-flex justify-content-center">
       <div className="col-md-4 col-sm-6">
-        {" "}
         {/* Adjust the column size here */}
         <h2 className="text-center">Login Profile</h2>
-        <form onSubmit={handleSubmit} className="p-4 border rounded shadow mb-5">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 border rounded shadow mb-5"
+        >
           <div className="mb-3">
             <input
               type="email"
@@ -75,6 +87,19 @@ const LoginProfilePage = () => {
           </p>
         </form>
       </div>
+
+      {/* Error Modal */}
+      <Modal show={showErrorModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

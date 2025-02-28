@@ -8,7 +8,6 @@ const wishlistSlice = createSlice({
   },
   reducers: {
     addToWishlist: (state, action) => {
-      // Check if the item is already in the wishlist
       const existingItem = state.items.find(
         (item) => item.productId === action.payload.productId
       );
@@ -17,7 +16,6 @@ const wishlistSlice = createSlice({
       }
     },
     removeFromWishlist: (state, action) => {
-      // Filter out the item to be removed
       state.items = state.items.filter(
         (item) => item.productId !== action.payload.productId
       );

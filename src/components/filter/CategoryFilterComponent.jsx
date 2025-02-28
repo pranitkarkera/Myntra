@@ -5,7 +5,7 @@ const CategoryFilterComponent = ({ categories, onCategoryChange, reset }) => {
 
   useEffect(() => {
     if (reset) {
-      setSelectedCategories([]); // Reset internal state when reset prop is triggered
+      setSelectedCategories([]);
     }
   }, [reset]);
 
@@ -37,12 +37,12 @@ const CategoryFilterComponent = ({ categories, onCategoryChange, reset }) => {
             id={category._id}
             value={category.categoryName}
             className="form-check-input"
-            checked={selectedCategories.includes(category.categoryId)} // Ensure checkbox reflects state
-            onChange={() => handleCategorySelect(category.categoryId)} // Use category._id for consistency
+            checked={selectedCategories.includes(category.categoryId)}
+            onChange={() => handleCategorySelect(category.categoryId)}
             aria-label={`Select category ${category.categoryName}`}
           />{" "}
           <label htmlFor={category._id} className="form-check-label">
-            {category.categoryName} {/*category length*/}
+            {category.categoryName}
           </label>
         </div>
       ))}

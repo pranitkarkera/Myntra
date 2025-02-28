@@ -138,7 +138,19 @@ const ProductListingPage = () => {
             </div>
           )}
           <div className="row">
-            {Array.isArray(sortedProducts) && sortedProducts.length > 0 ? (
+            {loading ? (
+              <p>Loading products...</p>
+            ) : error ? (
+              <div>
+                <p className="text-danger">Error: {error}</p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => dispatch(fetchAllProducts())}
+                >
+                  Retry
+                </button>
+              </div>
+            ) : Array.isArray(sortedProducts) && sortedProducts.length > 0 ? (
               sortedProducts.map((product) => (
                 <div className="col-md-3 mb-4" key={product.productId}>
                   <div className="card hover-effect position-relative">

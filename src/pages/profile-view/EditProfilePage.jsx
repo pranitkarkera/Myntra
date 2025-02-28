@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserByEmail, updateUser  } from "../../reducer/userSlice"; // Import the actions
+import { fetchUserByEmail, updateUser } from "../../reducer/userSlice";
 import { toast } from "react-toastify";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 const EditProfilePage = () => {
-  const { email } = useParams(); // Get the email from the URL
+  const { email } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, error } = useSelector((state) => state.user); // Access user state
+  const { user, loading, error } = useSelector((state) => state.user);
 
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  // Fetch user data
   useEffect(() => {
     if (email) {
-      dispatch(fetchUserByEmail(email)); // Fetch user details by email
+      dispatch(fetchUserByEmail(email));
     }
   }, [dispatch, email]);
 
+  // Populate form fields when user data is available
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -26,30 +32,30 @@ const EditProfilePage = () => {
     }
   }, [user]);
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedUser  = { name, email, username }; // Prepare updated user data
-    dispatch(updateUser (updatedUser )) // Dispatch update user action
+    const updatedUser = { name, email, username };
+    dispatch(updateUser(updatedUser))
       .unwrap()
       .then(() => {
         toast.success("Profile updated successfully!");
-        navigate(`/profile-page/${email}`); // Redirect to the profile page
+        navigate(`/profile-page/${email}`);
       })
       .catch((err) => {
-        toast.error(err.message || "Failed to update profile.");
+        setErrorMessage(err.message || "Failed to update profile.");
+        setShowErrorModal(true); // Show the error modal
       });
+  };
+
+  // Close the error modal
+  const handleCloseModal = () => {
+    setShowErrorModal(false);
+    setErrorMessage("");
   };
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="text-danger">
-        <p>Error: {error}</p>
-      </div>
-    );
   }
 
   return (
@@ -57,7 +63,9 @@ const EditProfilePage = () => {
       <h2>Edit Profile</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="name" className="form-label">Name</label>
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
           <input
             type="text"
             className="form-control"
@@ -68,7 +76,9 @@ const EditProfilePage = () => {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">Username</label>
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
           <input
             type="text"
             className="form-control"
@@ -78,8 +88,23 @@ const EditProfilePage = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">Update Profile</button>
+        <button type="submit" className="btn btn-primary">
+          Update Profile
+        </button>
       </form>
+
+      {/* Error Modal */}
+      <Modal show={showErrorModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

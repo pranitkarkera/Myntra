@@ -11,7 +11,7 @@ const GenderBasedSlider = () => {
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051054/glif-run-outputs/xaywngrqt95lgutluiar.jpg"
               alt="Men's Collection"
-              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
+              className="img-fluid" 
             />
           </Link>
         </Carousel.Item>
@@ -20,7 +20,7 @@ const GenderBasedSlider = () => {
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051026/glif-run-outputs/ljzjnnjpomvhlq2fi6zb.jpg"
               alt="Women's Collection"
-              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
+              className="img-fluid"
             />
           </Link>
         </Carousel.Item>
@@ -29,7 +29,7 @@ const GenderBasedSlider = () => {
             <img
               src="https://res.cloudinary.com/dzkwltgyd/image/upload/v1738051501/glif-run-outputs/zvxdyebqdmkugp4ad6vh.jpg"
               alt="Kid's Collection"
-              className="img-fluid" // Use Bootstrap's img-fluid class for responsiveness
+              className="img-fluid"
             />
           </Link>
         </Carousel.Item>

@@ -8,6 +8,7 @@ import wishlistReducer from "../reducer/wishlistSlice";
 import shoppingBagReducer from "../reducer/shoppingBagSlice";
 import userReducer from "../reducer/userSlice";
 import addressReducer from "../reducer/addressSlice";
+import sizeReducer from "../reducer/sizeSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,8 +19,9 @@ const store = configureStore({
     productById: productByIdReducer,
     wishlist: wishlistReducer,
     shoppingBag: shoppingBagReducer,
-    user: userReducer, // Ensure this matches the slice name
+    user: userReducer,
     address: addressReducer,
+    size: sizeReducer,
   },
 });
 

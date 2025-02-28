@@ -11,7 +11,7 @@ const PriceSliderComponent = () => {
     dispatch(setPriceRange({ min: newValue[0], max: newValue[1] }));
   };
 
-  console.log("Price Range:", priceRange); // Debugging
+  console.log("Price Range:", priceRange);
 
   return (
     <div>

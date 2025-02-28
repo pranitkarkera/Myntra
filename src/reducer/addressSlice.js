@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Define the base URL for your API
 const API_URL = "https://myntra-clone-backend-nine.vercel.app/api/address";
 
 // Async thunk to fetch addresses by user ID
@@ -11,7 +10,7 @@ export const fetchAddressesByUser = createAsyncThunk(
     try {
       const response = await axios.get(`${API_URL}/${number}`);
       console.log(response.data)
-      return response.data; // Adjust based on your API response structure
+      return response.data; 
     } catch (error) {
       console.error("Error adding address:", error.response?.data);
       return rejectWithValue(error.response?.data || "Failed to add address");
@@ -25,7 +24,7 @@ export const addAddress = createAsyncThunk(
   async (address) => {
     try {
       const response = await axios.post(`${API_URL}/add`, address);
-      return response.data; // Adjust based on your API response structure
+      return response.data;
     } catch (error) {
       throw new Error(
         error.response ? error.response.data : "Failed to add address"
@@ -43,7 +42,7 @@ export const updateAddress = createAsyncThunk(
         `${API_URL}/${number}`,
         updatedAddress
       );
-      return response.data; // Adjust based on your API response structure
+      return response.data;
     } catch (error) {
       throw new Error(
         error.response ? error.response.data : "Failed to update address"
@@ -58,7 +57,7 @@ export const deleteAddress = createAsyncThunk(
   async (number) => {
     try {
       await axios.delete(`${API_URL}/${number}`);
-      return addressId; // Return the ID of the deleted address
+      return addressId;
     } catch (error) {
       throw new Error(
         error.response ? error.response.data : "Failed to delete address"
@@ -69,7 +68,7 @@ export const deleteAddress = createAsyncThunk(
 
 const initialState = {
   addresses: [],
-  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: "idle", 
   error: null,
 };
 
@@ -84,14 +83,14 @@ const addressSlice = createSlice({
       })
       .addCase(fetchAddressesByUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.addresses = action.payload; // Assuming payload is an array of addresses
+        state.addresses = action.payload; 
       })
       .addCase(fetchAddressesByUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
       .addCase(addAddress.fulfilled, (state, action) => {
-        state.addresses.push(action.payload); // Assuming payload is the added address
+        state.addresses.push(action.payload); 
       })
       .addCase(updateAddress.fulfilled, (state, action) => {
         const { id, updatedAddress } = action.payload;
@@ -112,6 +111,4 @@ const addressSlice = createSlice({
   },
 });
 
-
-// Export reducer
 export default addressSlice.reducer;

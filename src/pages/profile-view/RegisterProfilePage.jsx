@@ -1,50 +1,65 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../reducer/userSlice";
 import { toast } from "react-toastify";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
 const RegisterProfilePage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState(""); // Add state for username
+  const [username, setUsername] = useState("");
+
+  // Modal state
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setErrorMessage("Passwords do not match");
+      setShowErrorModal(true); // Show the error modal
       return;
     }
-    const newUser = { name, email, password, username }; // Include username
+
+    const newUser = { name, email, password, username };
     dispatch(registerUser(newUser))
       .unwrap()
       .then((userData) => {
-        console.log("User  data after registration:", userData);
+        console.log("User data after registration:", userData);
         toast.success("Registration successful!");
-        navigate(`/profile-page/${userData.user.email}`); // Redirect to the user's profile page
+        navigate(`/profile-page/${userData.user.email}`);
       })
       .catch((err) => {
-        toast.error(err.message || "Registration failed.");
+        setErrorMessage(err.message || "Registration failed.");
+        setShowErrorModal(true); // Show the error modal
       });
   };
 
   const handleGuestLogin = () => {
-    // Logic for guest login
     toast.success("Logged in as a guest!");
-    navigate("/homepage"); // Redirect to homepage as a guest user
+    navigate("/homepage");
+  };
+
+  const handleCloseModal = () => {
+    setShowErrorModal(false);
+    setErrorMessage("");
   };
 
   return (
     <div className="container mt-5 d-flex justify-content-center">
       <div className="col-md-4 col-sm-6">
-        {" "}
-        {/* Adjust the column size here */}
         <h2 className="text-center">Register Profile</h2>
-        <form onSubmit={handleSubmit} className="p-4 border rounded shadow mb-5">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 border rounded shadow mb-5"
+        >
           <div className="mb-3">
             <input
               type="text"
@@ -115,6 +130,19 @@ const RegisterProfilePage = () => {
           </p>
         </form>
       </div>
+
+      {/* Error Modal */}
+      <Modal show={showErrorModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{errorMessage}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

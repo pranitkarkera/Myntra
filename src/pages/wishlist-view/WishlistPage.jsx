@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishlist } from "../../reducer/wishlistSlice"; // Import the action
-import { addToBag } from "../../reducer/shoppingBagSlice"; // Import the action
+import { removeFromWishlist } from "../../reducer/wishlistSlice"; 
+import { addToBag } from "../../reducer/shoppingBagSlice";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
@@ -20,8 +20,8 @@ const WishlistPage = () => {
   };
 
   const handleMoveToBag = (product) => {
-    dispatch(addToBag(product)); // Add the product to the bag
-    handleRemoveFromWishlist(product); // Remove the product from the wishlist
+    dispatch(addToBag(product));
+    handleRemoveFromWishlist(product);
     toast.success("Item moved to bag");
   };
 
@@ -78,7 +78,7 @@ const WishlistPage = () => {
                 </div>
                 <button
                   className="btn btn-light text-danger fw-bolder py-3"
-                  onClick={() => handleMoveToBag(product)} // Call the new function
+                  onClick={() => handleMoveToBag(product)}
                 >
                   MOVE TO BAG
                 </button>

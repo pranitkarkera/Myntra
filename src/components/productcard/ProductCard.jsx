@@ -1,4 +1,3 @@
-// src/components/ProductCard.js
 import React from "react";
 import { Card } from "react-bootstrap";
 

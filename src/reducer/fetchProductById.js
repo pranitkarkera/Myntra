@@ -1,15 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// export const fetchProductById = createAsyncThunk(
-//   "shoppingProducts/fetchProductById",
-//   async (productId) => {
-//     const response = await axios.get(`/api/products/${productId}`); // Adjust the API endpoint
-//     console.log(response)
-//     return response.data;
-//   }
-// );
-
 export const fetchProductById = createAsyncThunk(
   "product/fetchProductById",
   async (productId) => {
@@ -18,7 +9,7 @@ export const fetchProductById = createAsyncThunk(
         `https://myntra-clone-backend-nine.vercel.app/api/products/${productId}`
       );
       // console.log(response.data.data.product)
-      return response.data.data.product; // Return the products array
+      return response.data.data.product; 
     } catch (error) {
       throw new Error(
         error.response ? error.response.data : "Failed to fetch data"

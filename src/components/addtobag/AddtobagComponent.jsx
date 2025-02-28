@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   removeFromBag,
   updateQuantity,
-  updateSize,
+  updateSize
 } from "../../reducer/shoppingBagSlice";
 import { addToWishlist } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 const AddToBagComponent = () => {
   const dispatch = useDispatch();
   const bagItems = useSelector((state) => state.shoppingBag.items);
+  const selectedSize = useSelector((state) => state.size.selectedSize);
 
   const handleRemoveFromBag = (product) => {
     dispatch(removeFromBag(product));
@@ -66,20 +67,23 @@ const AddToBagComponent = () => {
                 <div className="card-body">
                   <h5 className="card-title">{product.brandName}</h5>
                   <p className="card-text">{product.productName}</p>
-                  <span>Size:</span>{" "}
-                  <select
-                    className="form-select w-50 mt-2"
-                    value={product.selectedSize || product.size[0]}
-                    onChange={(e) =>
-                      handleSizeChange(product.productId, e.target.value)
-                    }
-                  >
-                    {product.size.map((size, index) => (
-                      <option key={index} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span>Selected Size:</span>
+                    <select
+                      className="form-select w-50 mt-2"
+                      value={product.selectedSize || "S"} // Default to 'S'
+                      onChange={(e) =>
+                        handleSizeChange(product.productId, e.target.value)
+                      }
+                    >
+                      {product.size.map((sizeOption) => (
+                        <option key={sizeOption} value={sizeOption}>
+                          {sizeOption}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <select
                     className="form-select w-50 mt-2"
                     value={quantity}
