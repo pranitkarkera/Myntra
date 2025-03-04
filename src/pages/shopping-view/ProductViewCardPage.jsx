@@ -6,10 +6,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdStar } from "react-icons/io";
 import { FaRupeeSign } from "react-icons/fa";
 import { Carousel } from "react-bootstrap";
-import { addToBag } from "../../reducer/shoppingBagSlice";
-import { addToWishlist, removeFromWishlist } from "../../reducer/wishlistSlice";
+import {
+  addItemToBag, // Import addItemToBag
+} from "../../reducer/shoppingBagSlice";
+import {
+  addItemToWishlist,
+  removeItemFromWishlist,
+  fetchWishlist,
+} from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
 import { setSize } from "../../reducer/sizeSlice";
+import { jwtDecode } from "jwt-decode"; // Import jwtDecode
 
 const ProductViewCardPage = () => {
   const { productId } = useParams();
@@ -19,6 +26,30 @@ const ProductViewCardPage = () => {
   const error = useSelector((state) => state.productById.error);
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const selectedSize = useSelector((state) => state.size.selectedSize);
+
+  // Get userId from Redux or decode from token
+  const user = useSelector((state) => state.user.user);
+  let userId = user ? user._id : null;
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        userId = decoded._id; // Assuming _id is the field for userId in your JWT payload
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        // Handle token decoding error (e.g., token is invalid)
+        localStorage.removeItem("jwtToken"); // Remove invalid token
+        toast.error("Invalid session. Please log in again.");
+        userId = null;
+        // Redirect to login page if necessary
+      }
+    }
+    if (userId) {
+      dispatch(fetchWishlist(userId));
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(fetchProductById(productId));
@@ -32,24 +63,68 @@ const ProductViewCardPage = () => {
     dispatch(setSize(size));
   };
 
-  const handleToggleWishlist = (event) => {
+  const handleToggleWishlist = async (event) => {
     event.stopPropagation();
+    if (!userId) {
+      toast.error("Please log in to manage your wishlist.");
+      return;
+    }
     const existingItem = wishlistItems.find(
       (item) => item.productId === product.productId
     );
-    if (existingItem) {
-      dispatch(removeFromWishlist(product));
-      toast.error("Item removed from wishlist");
-    } else {
-      dispatch(addToWishlist(product));
-      toast.success("Item added to wishlist");
+    try {
+      if (existingItem) {
+        await dispatch(
+          removeItemFromWishlist({
+            userId,
+            productId: product.productId,
+          })
+        ).unwrap();
+        toast.error("Item removed from wishlist");
+      } else {
+        await dispatch(
+          addItemToWishlist({
+            userId,
+            productId: product.productId,
+            productName: product.productName,
+            brandName: product.brandName,
+            price: product.price,
+            originalPrice: product.originalPrice,
+            discountPercent: product.discountPercent,
+          })
+        ).unwrap();
+        toast.success("Item added to wishlist");
+      }
+      dispatch(fetchWishlist(userId));
+    } catch (err) {
+      toast.error(err.message || "Failed to update wishlist");
     }
   };
 
-  const handleAddToBag = () => {
+  const handleAddToBag = async () => {
+    if (!userId) {
+      toast.error("Please log in to add items to your bag.");
+      return;
+    }
     const sizeToAdd = selectedSize || "S";
-    dispatch(addToBag({ ...product, selectedSize: sizeToAdd }));
-    toast.success("Item added to bag");
+    try {
+      await dispatch(
+        addItemToBag({
+          userId: userId,
+          productId: product.productId,
+          productName: product.productName,
+          brandName: product.brandName,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          discountPercent: product.discountPercent,
+          selectedSize: sizeToAdd, // Include selectedSize
+        })
+      ).unwrap();
+      toast.success("Item added to bag!");
+    } catch (error) {
+      console.error("Error adding to bag:", error);
+      toast.error(error.message || "Failed to add item to bag");
+    }
   };
 
   if (loading) {

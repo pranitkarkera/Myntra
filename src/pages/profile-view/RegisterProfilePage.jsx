@@ -13,7 +13,6 @@ const RegisterProfilePage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
 
   // Modal state
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -28,13 +27,12 @@ const RegisterProfilePage = () => {
       return;
     }
 
-    const newUser = { name, email, password, username };
+    const newUser = { name, email, password };
     dispatch(registerUser(newUser))
       .unwrap()
-      .then((userData) => {
-        console.log("User data after registration:", userData);
-        toast.success("Registration successful!");
-        navigate(`/profile-page/${userData.user.email}`);
+      .then(() => {
+        toast.success("Registration successful! Redirecting to Login...");
+        navigate(`/login`);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Registration failed.");
@@ -60,17 +58,6 @@ const RegisterProfilePage = () => {
           onSubmit={handleSubmit}
           className="p-4 border rounded shadow mb-5"
         >
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              id="username"
-              placeholder="Username*"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
           <div className="mb-3">
             <input
               type="text"

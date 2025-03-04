@@ -1,126 +1,188 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  removeFromBag,
-  updateQuantity,
-  updateSize
-} from "../../reducer/shoppingBagSlice";
-import { addToWishlist } from "../../reducer/wishlistSlice";
+  removeItemFromBag,
+  updateItemQuantityInBag,
+} from "../../reducer/shoppingBagSlice"; // Import async thunks
+import { addItemToWishlist } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
 
 const AddToBagComponent = () => {
   const dispatch = useDispatch();
-  const bagItems = useSelector((state) => state.shoppingBag.items);
-  const selectedSize = useSelector((state) => state.size.selectedSize);
+  const bagItems = useSelector((state) => state.shoppingBag.items || []); // Ensure fallback to empty array
+  const user = useSelector((state) => state.user.user);
+  const userId = user ? user._id : null;
 
-  const handleRemoveFromBag = (product) => {
-    dispatch(removeFromBag(product));
-    toast.error("Item removed from bag");
+  const handleRemoveFromBag = async (product) => {
+    if (!userId) {
+      console.error("User ID is undefined.");
+      toast.error("Please log in to manage your bag.");
+      return;
+    }
+
+    try {
+      await dispatch(
+        removeItemFromBag({ userId, productId: product.productId })
+      ).unwrap();
+      await dispatch(
+        addItemToWishlist({
+          userId,
+          productId: product.productId,
+          productName: product.productName,
+          brandName: product.brandName,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          discountPercent: product.discountPercent,
+        })
+      ).unwrap();
+      toast.success("Item moved to wishlist");
+      dispatch(fetchCart(userId)); // Dispatch fetchCart after moving item to wishlist
+    } catch (err) {
+      toast.error(err.message || "Failed to move item");
+    }
+
   };
 
-  const handleQuantityChange = (id, event) => {
+  const handleQuantityChange = async (id, event) => {
     const newQuantity = parseInt(event.target.value);
+
     if (!isNaN(newQuantity) && newQuantity > 0) {
-      dispatch(updateQuantity({ id, quantity: newQuantity }));
+      if (!userId) {
+        console.error("User ID is undefined.");
+        toast.error("Please log in to update quantity.");
+        return;
+      }
+
+      try {
+        await dispatch(
+          updateItemQuantityInBag({
+            userId,
+            productId: id,
+            quantity: newQuantity,
+          })
+        ).unwrap();
+        toast.success("Quantity updated");
+      } catch (err) {
+        toast.error(err.message || "Failed to update quantity");
+      }
     }
   };
 
-  const handleSizeChange = (id, size) => {
-    dispatch(updateSize({ id, size }));
-  };
+  const moveToWishlist = async (product) => {
+    if (!userId) {
+      console.error("User ID is undefined.");
+      toast.error("Please log in to move items to wishlist.");
+      return;
+    }
 
-  const moveToWishlist = (product) => {
-    dispatch(removeFromBag(product));
-    dispatch(addToWishlist(product));
-    toast.error("Item moved to wishlist");
+    try {
+      await dispatch(
+        removeItemFromBag({ userId, productId: product.productId })
+      ).unwrap();
+      await dispatch(
+        addItemToWishlist({
+          userId,
+          productId: product.productId,
+          productName: product.productName,
+          brandName: product.brandName,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          discountPercent: product.discountPercent,
+        })
+      ).unwrap();
+      toast.success("Item moved to wishlist");
+    } catch (err) {
+      toast.error(err.message || "Failed to move item");
+    }
   };
-
-  const totalMRP = bagItems.reduce(
-    (acc, item) => acc + item.originalPrice * (item.quantity || 1),
-    0
-  );
-  const discount = bagItems.reduce(
-    (acc, item) =>
-      acc +
-      (item.discountPercent / 100) * item.originalPrice * (item.quantity || 1),
-    0
-  );
-  const subtotal = totalMRP - discount;
-  const shippingFee = 20;
-  const totalAmount = subtotal + shippingFee;
 
   return (
-    <div className="col-md-8">
-      {bagItems.map((product) => {
-        const quantity = product.quantity || 1;
-        return (
-          <div key={product.productId} className="card mb-3 p-3">
-            <div className="row g-0">
-              <div className="col-md-2">
-                <img
-                  src={product.images[0]}
-                  className="img-fluid rounded"
-                  alt={product.productName}
-                />
-              </div>
-              <div className="col-md-7">
-                <div className="card-body">
-                  <h5 className="card-title">{product.brandName}</h5>
-                  <p className="card-text">{product.productName}</p>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span>Selected Size:</span>
-                    <select
-                      className="form-select w-50 mt-2"
-                      value={product.selectedSize || "S"} // Default to 'S'
-                      onChange={(e) =>
-                        handleSizeChange(product.productId, e.target.value)
-                      }
-                    >
-                      {product.size.map((sizeOption) => (
-                        <option key={sizeOption} value={sizeOption}>
-                          {sizeOption}
-                        </option>
-                      ))}
-                    </select>
+    <div className="container mt-4">
+      <h5 className="fw-bold">Your Shopping Bag</h5>
+
+      {/* List of Bag Items */}
+      {Array.isArray(bagItems) && bagItems.length > 0 ? (
+        <div
+          className="row overflow-y-auto" // Enable vertical scrolling
+          style={{ maxHeight: "70vh" }} // Set a max height for the scrollable container
+        >
+          {bagItems.map((product) => (
+            <div
+              key={product.productId}
+              className="col-12 mb-4" // Full width for each card
+            >
+              <div className="card h-100">
+                <div className="row g-0 h-100">
+                  {/* Image Column */}
+                  <div className="col-12 col-md-4">
+                    <img
+                      src={
+                        product.images?.[0] || "https://via.placeholder.com/150"
+                      } // Fallback image
+                      className="img-fluid rounded-start h-100 w-100" // Ensure image fills the container
+                      alt={product.productName || "Product image"}
+                      style={{ objectFit: "cover" }} // Maintain aspect ratio
+                    />
                   </div>
 
-                  <select
-                    className="form-select w-50 mt-2"
-                    value={quantity}
-                    onChange={(e) => handleQuantityChange(product.productId, e)}
-                  >
-                    {[1, 2, 3, 4, 5].map((qty) => (
-                      <option key={qty} value={qty}>
-                        Qty: {qty}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Content Column */}
+                  <div className="col-12 col-md-8">
+                    <div className="card-body d-flex flex-column h-100">
+                      <h5 className="card-title">{product.brandName}</h5>
+                      <p className="card-text">{product.productName}</p>
+
+                      {/* Quantity Selector */}
+                      <div className="mt-auto">
+                        <select
+                          className="form-select w-50 mb-3"
+                          value={product.quantity || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(product.productId, e)
+                          }
+                        >
+                          {[1, 2, 3, 4, 5].map((qty) => (
+                            <option key={qty} value={qty}>
+                              Qty: {qty}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Footer with Price and Buttons */}
+                      <div className="card-footer bg-transparent border-0 p-0">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <p className="fw-bold fs-5 mb-0">
+                            ₹
+                            {(
+                              product.originalPrice * (product.quantity || 1)
+                            ).toFixed(2)}
+                          </p>
+                          <div className="d-flex gap-2">
+                            <button
+                              className="btn btn-outline-danger btn-sm"
+                              onClick={() => handleRemoveFromBag(product)}
+                            >
+                              Remove
+                            </button>
+                            <button
+                              className="btn btn-outline-secondary btn-sm"
+                              onClick={() => moveToWishlist(product)}
+                            >
+                              Move to Wishlist
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="col-md-3 text-end">
-                <p className="fw-bold fs-5">
-                  ₹{(product.originalPrice * quantity).toFixed(2)}
-                </p>
-                <p className="text-muted text-decoration-line-through">
-                  ₹{(product.originalPrice * product.quantity).toFixed(2)}
-                </p>
-                <button
-                  className="btn btn-outline-danger mt-2 me-2"
-                  onClick={() => handleRemoveFromBag(product)}
-                >
-                  Remove
-                </button>
-                <button
-                  className="btn btn-outline-secondary mt-2"
-                  onClick={() => moveToWishlist(product)}
-                >
-                  Move to Wishlist
-                </button>
-              </div>
             </div>
-          </div>
-        );
-      })}
+          ))}
+        </div>
+      ) : (
+        <p>No items in your bag.</p>
+      )}
     </div>
   );
 };

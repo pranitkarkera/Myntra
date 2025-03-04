@@ -1,33 +1,92 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishlist } from "../../reducer/wishlistSlice"; 
-import { addToBag } from "../../reducer/shoppingBagSlice";
-import { Link } from "react-router-dom";
+import {
+  fetchWishlist,
+  removeItemFromWishlist,
+} from "../../reducer/wishlistSlice";
+import { addItemToBag } from "../../reducer/shoppingBagSlice";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "./WishlistPage.css";
+import { jwtDecode } from "jwt-decode"; // Correct import for jwtDecode
 
 const WishlistPage = () => {
   const dispatch = useDispatch();
-  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState(null); // State for userId
+  const wishlistItems = useSelector((state) => state.wishlist.items || []);
+  const wishlistError = useSelector((state) => state.wishlist.error);
 
-  const handleRemoveFromWishlist = (product) => {
-    dispatch(
-      removeFromWishlist(product)
+  // Decode JWT token to get userId
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded); // Check the actual field names
+        setUserId(decoded._id || decoded.id); // Try both _id and id
+      } catch (error) {
+        console.error("Error decoding JWT token:", error);
+        localStorage.removeItem("jwtToken"); // Remove invalid token
+        toast.error("Invalid session. Please log in again.");
+        setUserId(null);
+        navigate("/login"); // Redirect to login page if necessary
+      }
+    }
+  }, [navigate]);
+
+  // Fetch wishlist items
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchWishlist(userId));
+    } else {
+      console.error("User ID is undefined");
+    }
+  }, [dispatch, userId]);
+
+  // Handle errors related to wishlist fetching
+  useEffect(() => {
+    if (
+      wishlistError === "Unauthorized, no JWT token found" ||
+      wishlistError === "Unauthorized, JWT token wrong or expired"
+    ) {
+      toast.error("Session expired. Please log in again.");
+      navigate("/login"); // Redirect to login page
+    }
+  }, [wishlistError, navigate]);
+
+  if (!userId) {
+    return (
+      <div className="text-center">
+        <p>Loading user data...</p>
+      </div>
     );
-    toast.error("Item removed from wishlist");
+  }
+
+  // Remove item from wishlist
+  const handleRemoveFromWishlist = (product) => {
+    dispatch(removeItemFromWishlist({ userId, productId: product.productId }))
+      .unwrap()
+      .then(() => {
+        toast.error("Item removed from wishlist");
+        dispatch(fetchWishlist(userId)); // Refresh the wishlist after removal
+      })
+      .catch((err) => {
+        toast.error(err.message || "Failed to remove item");
+      });
   };
 
+  // Move item to bag and remove from wishlist
   const handleMoveToBag = (product) => {
-    dispatch(addToBag(product));
+    dispatch(addItemToBag(product));
     handleRemoveFromWishlist(product);
     toast.success("Item moved to bag");
   };
 
   return (
     <div className="container">
-
       {wishlistItems.length === 0 ? (
         <div className="text-center py-5 my-5">
           <img
@@ -57,7 +116,10 @@ const WishlistPage = () => {
                   style={{ textDecoration: "none" }}
                 >
                   <img
-                    src={product.images[0]}
+                    src={
+                      product.images?.[0] ||
+                      "/path/to/local/placeholder/image.png"
+                    }
                     className="card-img-top"
                     alt={product.productName || "Product image"}
                   />

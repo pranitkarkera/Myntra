@@ -1,46 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserByEmail, updateUser } from "../../reducer/userSlice";
+import { fetchUserById, updateUser } from "../../reducer/userSlice";
 import { toast } from "react-toastify";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
 const EditProfilePage = () => {
-  const { email } = useParams();
+  const { userId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, loading, error } = useSelector((state) => state.user);
 
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch user data
   useEffect(() => {
-    if (email) {
-      dispatch(fetchUserByEmail(email));
+    if (userId) {
+      dispatch(fetchUserById(userId));
     }
-  }, [dispatch, email]);
+  }, [dispatch, userId]);
 
   // Populate form fields when user data is available
   useEffect(() => {
     if (user) {
       setName(user.name);
-      setUsername(user.username);
     }
   }, [user]);
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedUser = { name, email, username };
+    const updatedUser = { name, userId };
     dispatch(updateUser(updatedUser))
       .unwrap()
       .then(() => {
         toast.success("Profile updated successfully!");
-        navigate(`/profile-page/${email}`);
+        navigate(`/profile-page/${userId}`);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Failed to update profile.");
@@ -48,7 +46,6 @@ const EditProfilePage = () => {
       });
   };
 
-  // Close the error modal
   const handleCloseModal = () => {
     setShowErrorModal(false);
     setErrorMessage("");
@@ -72,19 +69,6 @@ const EditProfilePage = () => {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>

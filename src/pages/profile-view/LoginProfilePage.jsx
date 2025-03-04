@@ -20,9 +20,9 @@ const LoginProfilePage = () => {
     dispatch(loginUser(credentials))
       .unwrap()
       .then((userData) => {
-        console.log("User data after login:", userData.user.email);
+        console.log("User data after login:", userData.user._id);
         toast.success("Login successful!");
-        navigate(`/profile-page/${userData.user.email}`);
+        navigate(`/profile-page/${userData.user._id}`);
       })
       .catch((err) => {
         setErrorMessage(err.message || "Login failed.");
@@ -83,7 +83,7 @@ const LoginProfilePage = () => {
             Login as Guest
           </button>
           <p className="text-center mt-3">
-            Don't have an account? <Link to="/">Register</Link>
+            Don't have an account? <Link to="/signup">Register</Link>
           </p>
         </form>
       </div>

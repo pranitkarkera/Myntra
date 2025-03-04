@@ -9,6 +9,7 @@ import shoppingBagReducer from "../reducer/shoppingBagSlice";
 import userReducer from "../reducer/userSlice";
 import addressReducer from "../reducer/addressSlice";
 import sizeReducer from "../reducer/sizeSlice";
+import orderSlice from "../reducer/orderSlice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     user: userReducer,
     address: addressReducer,
     size: sizeReducer,
+    order: orderSlice,
   },
 });
 

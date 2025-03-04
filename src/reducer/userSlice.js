@@ -3,19 +3,25 @@ import axios from "axios";
 
 // Async thunk to register user
 export const registerUser = createAsyncThunk(
-  'user/registerUser',
+  "user/signup",
   async (newUser) => {
-    const response = await axios.post(
-      "https://myntra-clone-backend-nine.vercel.app/api/user/register",
-      newUser
-    );
-    return response.data;
+    try {
+      const response = await axios.post(
+        "https://myntra-clone-backend-nine.vercel.app/api/user/signup",
+        newUser
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        error.response ? error.response.data : "Failed to fetch data"
+      );
+    }
   }
 );
 
 // Async thunk to login user
 export const loginUser = createAsyncThunk(
-  "user/loginUser",
+  "user/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
@@ -23,6 +29,7 @@ export const loginUser = createAsyncThunk(
         credentials
       );
       console.log("Login response:", response.data);
+      localStorage.setItem("jwtToken", response.data.jwtToken);
       return response.data;
     } catch (error) {
       console.error("Login error:", error.response?.data);
@@ -32,12 +39,17 @@ export const loginUser = createAsyncThunk(
 );
 
 // Async thunk to fetch user by ID
-export const fetchUserByEmail = createAsyncThunk(
-  "user/fetchUserByEmail",
-  async (email, { rejectWithValue }) => {
+export const fetchUserById = createAsyncThunk(
+  "user/getUser",
+  async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://myntra-clone-backend-nine.vercel.app/api/user/${email}`
+        `https://myntra-clone-backend-nine.vercel.app/api/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (error) {
@@ -48,13 +60,18 @@ export const fetchUserByEmail = createAsyncThunk(
 );
 
 // Async thunk to update user
-export const updateUser  = createAsyncThunk(
-  'user/updateUser ',
-  async (updatedUser , { rejectWithValue }) => {
+export const updateUser = createAsyncThunk(
+  "user/updateUser ",
+  async (updatedUser, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `https://myntra-clone-backend-nine.vercel.app/api/user/${updatedUser.email}`,
-        updatedUser 
+        `https://myntra-clone-backend-nine.vercel.app/api/user/${updatedUser.userId}`,
+        updatedUser,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (error) {
@@ -66,12 +83,17 @@ export const updateUser  = createAsyncThunk(
 );
 
 // Async thunk to delete user
-export const deleteUser  = createAsyncThunk(
+export const deleteUser = createAsyncThunk(
   "user/deleteUser ",
-  async (email, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `https://myntra-clone-backend-nine.vercel.app/api/user/${email}`
+        `https://myntra-clone-backend-nine.vercel.app/api/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        }
       );
       return response.data;
     } catch (error) {
@@ -82,11 +104,12 @@ export const deleteUser  = createAsyncThunk(
   }
 );
 
-// Create a slice
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: null,
+    user: localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null,
     loading: false,
     error: null,
   },
@@ -95,19 +118,57 @@ const userSlice = createSlice({
       state.user = null;
       state.loading = false;
       state.error = null;
+      localStorage.removeItem("jwtToken");
+      localStorage.removeItem("user"); 
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserByEmail.pending, (state) => {
+      .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserByEmail.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(fetchUserByEmail.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
@@ -118,6 +179,8 @@ const userSlice = createSlice({
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = null;
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("user"); 
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
