@@ -8,15 +8,14 @@ import MyntraLogo from "../../assets/myntra-logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchTerm } from "../../reducer/searchSlice";
 import { fetchWishlist } from "../../reducer/wishlistSlice";
+import { fetchCart } from "../../reducer/shoppingBagSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
-
-  // Redux selectors with fallback values
   const wishlistItems = useSelector((state) => state.wishlist.items || []);
   const bagItems = useSelector((state) => state.shoppingBag.items || []);
-  console.log(bagItems)
   const user = useSelector((state) => state.user.user);
+  console.log("User",user)
   const userId = user?._id || null;
 
   // Fetch wishlist when userId is available
@@ -25,6 +24,16 @@ const Header = () => {
       dispatch(fetchWishlist(userId));
     }
   }, [dispatch, userId]);
+
+    useEffect(() => {
+      if (userId) {
+        dispatch(fetchCart(userId));
+      }
+    }, [dispatch, userId]);
+
+      useEffect(() => {
+        console.log("Bag items updated:", bagItems);
+      }, [bagItems]);
 
   // Handle search input change
   const handleSearch = (e) => {
@@ -87,7 +96,7 @@ const Header = () => {
                   <li className="nav-item text-center mx-2">
                     <Link
                       className="nav-link active fw-bolder"
-                      to="/profile-page/:userId"
+                      to={`/profile-page/${userId}`}
                     >
                       <CiUser className="profile-icon" />
                       <p className="mb-0">Profile</p>

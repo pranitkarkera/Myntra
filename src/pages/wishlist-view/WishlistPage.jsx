@@ -4,7 +4,7 @@ import {
   fetchWishlist,
   removeItemFromWishlist,
 } from "../../reducer/wishlistSlice";
-import { addItemToBag } from "../../reducer/shoppingBagSlice";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdClose } from "react-icons/io";
@@ -79,10 +79,27 @@ const WishlistPage = () => {
   };
 
   // Move item to bag and remove from wishlist
-  const handleMoveToBag = (product) => {
-    dispatch(addItemToBag(product));
-    handleRemoveFromWishlist(product);
-    toast.success("Item moved to bag");
+  // Move item to bag and remove from wishlist
+  const handleMoveToBag = async (product) => {
+    try {
+      await dispatch(
+        addItemToBag({
+          userId,
+          productId: product.productId,
+          productName: product.productName,
+          brandName: product.brandName,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          discountPercent: product.discountPercent,
+          images: product.images,
+        })
+      ).unwrap();
+      await handleRemoveFromWishlist(product);
+      toast.success("Item moved to bag");
+      dispatch(fetchCart(userId));
+    } catch (err) {
+      toast.error(err.message || "Failed to move item");
+    }
   };
 
   return (

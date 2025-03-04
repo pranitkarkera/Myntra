@@ -155,12 +155,12 @@ const shoppingBagSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.items; // Update items here
+        state.items = action.payload.items; // Ensure items are updated correctly
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      })
+      });
   },
 });
 

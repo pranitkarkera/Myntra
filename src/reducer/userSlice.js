@@ -40,14 +40,21 @@ export const loginUser = createAsyncThunk(
 
 // Async thunk to fetch user by ID
 export const fetchUserById = createAsyncThunk(
-  "user/getUser",
+  "user/getUser ",
   async (userId, { rejectWithValue }) => {
+    const token = localStorage.getItem("jwtToken");
+    console.log("Fetching user with token:", token);
+    
+    if (!token) {
+      return rejectWithValue("JWT token is required");
+    }
+
     try {
       const response = await axios.get(
         `https://myntra-clone-backend-nine.vercel.app/api/user/${userId}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

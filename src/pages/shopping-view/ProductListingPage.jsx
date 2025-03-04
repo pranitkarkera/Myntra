@@ -6,10 +6,11 @@ import { fetchAllCategories } from "../../reducer/categoriesSlice";
 import {
   addItemToWishlist,
   removeItemFromWishlist,
-  fetchWishlist, // Import fetchWishlist
+  fetchWishlist,
 } from "../../reducer/wishlistSlice";
 import {
-  addItemToBag, // Import addItemToBag
+  addItemToBag,
+  fetchCart
 } from "../../reducer/shoppingBagSlice";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ProductListingPage.css";
@@ -39,6 +40,7 @@ const ProductListingPage = () => {
   const priceRange = useSelector((state) => state.shoppingProducts.priceRange);
   // Decode JWT token to get userId
   const [userId, setUserId] = useState(null);
+  
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
@@ -60,6 +62,23 @@ const ProductListingPage = () => {
       dispatch(fetchWishlist(userId));
     }
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    console.log("Fetching cart for user:", userId);
+    const fetchData = async () => {
+      if (userId) {
+        try {
+          await dispatch(fetchCart(userId)).unwrap();
+          console.log("Cart fetched successfully");
+        } catch (error) {
+          console.error("Error fetching cart:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [dispatch, userId]);
+
 
   useEffect(() => {
     dispatch(fetchAllProducts());
@@ -154,6 +173,7 @@ const ProductListingPage = () => {
       toast.error(err.message || "Failed to update wishlist");
     }
   };
+
   const handleAddToBag = async (product) => {
     if (!userId) {
       console.error("User ID is undefined.");
@@ -165,7 +185,7 @@ const ProductListingPage = () => {
       await dispatch(
         addItemToBag({
           userId,
-          productId: parseInt(product.productId), // Convert to number if needed
+          productId: parseInt(product.productId),
           productName: product.productName,
           brandName: product.brandName,
           price: product.price,
@@ -175,11 +195,12 @@ const ProductListingPage = () => {
         })
       ).unwrap();
       toast.success("Item added to bag");
-      dispatch(fetchCart(userId));
+      dispatch(fetchCart(userId)); // Dispatch fetchCart after adding item
     } catch (err) {
       toast.error(err.message || "Failed to add item to bag");
     }
   };
+
 
   return (
     <div className="container-fluid">

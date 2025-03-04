@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   removeItemFromBag,
   updateItemQuantityInBag,
+  fetchCart
 } from "../../reducer/shoppingBagSlice"; // Import async thunks
+import { fetchWishlist } from "../../reducer/wishlistSlice";
 import { addItemToWishlist } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
 
@@ -12,6 +14,7 @@ const AddToBagComponent = () => {
   const bagItems = useSelector((state) => state.shoppingBag.items || []); // Ensure fallback to empty array
   const user = useSelector((state) => state.user.user);
   const userId = user ? user._id : null;
+
 
   const handleRemoveFromBag = async (product) => {
     if (!userId) {
@@ -24,23 +27,11 @@ const AddToBagComponent = () => {
       await dispatch(
         removeItemFromBag({ userId, productId: product.productId })
       ).unwrap();
-      await dispatch(
-        addItemToWishlist({
-          userId,
-          productId: product.productId,
-          productName: product.productName,
-          brandName: product.brandName,
-          price: product.price,
-          originalPrice: product.originalPrice,
-          discountPercent: product.discountPercent,
-        })
-      ).unwrap();
       toast.success("Item moved to wishlist");
-      dispatch(fetchCart(userId)); // Dispatch fetchCart after moving item to wishlist
+      dispatch(fetchCart(userId));
     } catch (err) {
       toast.error(err.message || "Failed to move item");
     }
-
   };
 
   const handleQuantityChange = async (id, event) => {
@@ -62,6 +53,7 @@ const AddToBagComponent = () => {
           })
         ).unwrap();
         toast.success("Quantity updated");
+        dispatch(fetchCart(userId));
       } catch (err) {
         toast.error(err.message || "Failed to update quantity");
       }
@@ -88,9 +80,12 @@ const AddToBagComponent = () => {
           price: product.price,
           originalPrice: product.originalPrice,
           discountPercent: product.discountPercent,
+          images: product.images,
         })
       ).unwrap();
       toast.success("Item moved to wishlist");
+      dispatch(fetchCart(userId));
+      dispatch(fetchWishlist(userId));
     } catch (err) {
       toast.error(err.message || "Failed to move item");
     }
