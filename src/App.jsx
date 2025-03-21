@@ -16,7 +16,7 @@ import RegisterProfilePage from "./pages/profile-view/RegisterProfilePage";
 import LoginProfilePage from "./pages/profile-view/LoginProfilePage";
 import CheckoutPage from "./pages/checkout-view/CheckoutPage";
 import EditProfilePage from "./pages/profile-view/EditProfilePage";
-import OrderHistoryPage from "./pages/order-view/OrderHistorypage";
+import OrderHistoryPage from "./pages/order-view/OrderHistoryPage";
 import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
 import RefreshHandler from "./components/RefreshHandler";
 
