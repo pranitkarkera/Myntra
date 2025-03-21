@@ -17,6 +17,7 @@ import LoginProfilePage from "./pages/profile-view/LoginProfilePage";
 import CheckoutPage from "./pages/checkout-view/CheckoutPage";
 import EditProfilePage from "./pages/profile-view/EditProfilePage";
 import OrderHistoryPage from "./pages/order-view/OrderHistorypage";
+import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
 import RefreshHandler from "./components/RefreshHandler";
 
 function App() {
@@ -86,6 +87,10 @@ function App() {
           <Route
             path="/order-history/:userId"
             element={<PrivateRoute element={<OrderHistoryPage />} />}
+          />
+          <Route
+            path="/order-details/:userId/details/:orderId"
+            element={<PrivateRoute element={<OrderDetailsPage />} />}
           />
         </Routes>
         <Footer />

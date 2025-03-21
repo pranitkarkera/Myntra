@@ -4,24 +4,26 @@ import axios from "axios";
 // Async thunk to fetch order history by user email
 export const fetchOrderHistory = createAsyncThunk(
   "order/fetchOrderHistory",
-  async (userId) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("jwtToken"); // Retrieve JWT token
+      const token = localStorage.getItem("jwtToken");
       const response = await axios.get(
-        `https://your-backend-url/api/orders/${userId}/history`, // Correct URL
+        `https://myntra-clone-backend-nine.vercel.app/api/orders/${userId}/history`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Add Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      return response.data; // Return order history
+      return response.data;
     } catch (error) {
       console.error(
         "Error fetching order history:",
         error.response?.data || error.message
       );
-      throw error;
+      return rejectWithValue(
+        error.response?.data || "Failed to fetch order history"
+      );
     }
   }
 );
@@ -29,16 +31,29 @@ export const fetchOrderHistory = createAsyncThunk(
 // Async thunk to fetch order details by order ID
 export const fetchOrderDetails = createAsyncThunk(
   "order/fetchOrderDetails",
-  async (orderId) => {
+  async ({ userId, orderId }, { rejectWithValue }) => {
     try {
+      if (!userId || !orderId) {
+        return rejectWithValue("Missing userId or orderId"); // Reject if missing
+      }
+
       const response = await axios.get(
-        `https://myntra-clone-backend-nine.vercel.app/api/orders/${orderId}`
+        `https://myntra-clone-backend-nine.vercel.app/api/orders/${userId}/details/${orderId}`
       );
-      return response.data;
+
+      return response.data; // Return response data
     } catch (error) {
-      throw new Error(
-        error.response ? error.response.data : "Failed to fetch order details"
-      );
+      console.error("API call failed:", error);
+
+      if (error.response) {
+        return rejectWithValue(
+          error.response.data.error || "Failed to fetch order details"
+        );
+      } else if (error.request) {
+        return rejectWithValue("Server is not responding. Check backend logs.");
+      } else {
+        return rejectWithValue("Unexpected error.");
+      }
     }
   }
 );
