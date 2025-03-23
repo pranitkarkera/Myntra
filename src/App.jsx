@@ -19,6 +19,7 @@ import EditProfilePage from "./pages/profile-view/EditProfilePage";
 import OrderHistoryPage from "./pages/order-view/OrderHistoryPage";
 import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
 import RefreshHandler from "./components/RefreshHandler";
+import NotFound from "./components/NotFound";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -92,6 +93,7 @@ function App() {
             path="/order-details/:userId/details/:orderId"
             element={<PrivateRoute element={<OrderDetailsPage />} />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </div>

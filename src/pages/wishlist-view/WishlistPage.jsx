@@ -21,7 +21,6 @@ const WishlistPage = () => {
 
   // Decode JWT token to get userId
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
     if (token) {
       try {
         const decoded = jwtDecode(token);

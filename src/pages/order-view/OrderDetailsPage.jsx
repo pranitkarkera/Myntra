@@ -6,33 +6,26 @@ import { useParams } from "react-router-dom";
 const OrderDetailsPage = () => {
   const dispatch = useDispatch();
   const { orderDetails, loading, error } = useSelector((state) => state.order);
-  const { userId, orderId } = useParams();
-
-  // console.log("Extracted Params: ", userId, orderId);
-  // console.log("Order details:", orderDetails);
-  // console.log(totalAmount, _id)
-  // console.log(products.productId)
+  const { userId, orderId } = useParams(); // Get userId and orderId from URL
 
   useEffect(() => {
+    console.log(
+      "useEffect triggered with userId:",
+      userId,
+      "orderId:",
+      orderId
+    );
     if (userId && orderId) {
-      console.log("Fetching details with userId:", userId, "orderId:", orderId);
       dispatch(fetchOrderDetails({ userId, orderId }));
     } else {
       console.error("Missing userId or orderId");
     }
   }, [dispatch, userId, orderId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-danger">Error: {error}</div>;
-  }
-
-  if (!orderDetails || Object.keys(orderDetails).length === 0) {
-    return <div className="text-center">No order details found.</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-danger">Error: {error}</div>;
+  if (!orderDetails || Object.keys(orderDetails).length === 0)
+    return <div>No order details found.</div>;
 
   return (
     <div className="container mt-5">
@@ -43,7 +36,8 @@ const OrderDetailsPage = () => {
           <strong>Order ID:</strong> {orderDetails._id}
         </p>
         <p>
-          <strong>Order Date:</strong> {orderDetails.orderDate}
+          <strong>Order Date:</strong>{" "}
+          {new Date(orderDetails.orderDate).toLocaleDateString()}
         </p>
         <p>
           <strong>Total Amount:</strong> ₹{orderDetails.totalAmount}
