@@ -18,7 +18,8 @@ const WishlistPage = () => {
   const [userId, setUserId] = useState(null); // State for userId
   const wishlistItems = useSelector((state) => state.wishlist.items || []);
   const wishlistError = useSelector((state) => state.wishlist.error);
-
+  const token = localStorage.getItem("jwtToken");
+  
   // Decode JWT token to get userId
   useEffect(() => {
     if (token) {

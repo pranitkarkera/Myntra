@@ -37,7 +37,7 @@ const OrderHistoryPage = () => {
                 <p>Total Amount: ₹{order.totalAmount}</p>
                 <p>Status: {order.status}</p>
                 <Link
-                  to={`/order-details/details/${userId}/${order._id}`} // Include userId in the link
+                  to={`/order-details/${userId}/details/${order._id}`} // Include userId in the link
                   className="btn btn-primary"
                 >
                   View Details

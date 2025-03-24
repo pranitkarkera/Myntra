@@ -13,6 +13,8 @@ const LoginProfilePage = () => {
   const [password, setPassword] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const guestEmail = "guest@gmail.com";
+  const guestPassword = "Guest@123";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,9 +33,8 @@ const LoginProfilePage = () => {
   };
 
   const handleGuestLogin = () => {
-    // Redirect to homepage as a guest user
-    toast.success("Logged in as a guest!");
-    navigate("/homepage");
+    setEmail(guestEmail);
+    setPassword(guestPassword);
   };
 
   const handleCloseModal = () => {
@@ -44,7 +45,6 @@ const LoginProfilePage = () => {
   return (
     <div className="container mt-5 d-flex justify-content-center">
       <div className="col-md-4 col-sm-6">
-        {/* Adjust the column size here */}
         <h2 className="text-center">Login Profile</h2>
         <form
           onSubmit={handleSubmit}

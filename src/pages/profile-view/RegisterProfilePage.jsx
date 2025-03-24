@@ -17,6 +17,8 @@ const RegisterProfilePage = () => {
   // Modal state
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const guestEmail = "guest@gmail.com";
+  const guestPassword = "Guest@123";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,8 +43,9 @@ const RegisterProfilePage = () => {
   };
 
   const handleGuestLogin = () => {
-    toast.success("Logged in as a guest!");
-    navigate("/homepage");
+    setEmail(guestEmail);
+    setPassword(guestPassword);
+    setConfirmPassword(guestPassword);
   };
 
   const handleCloseModal = () => {

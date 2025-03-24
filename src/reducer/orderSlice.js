@@ -37,50 +37,56 @@ export const fetchOrderHistory = createAsyncThunk(
 export const fetchOrderDetails = createAsyncThunk(
   "order/fetchOrderDetails",
   async ({ userId, orderId }, { rejectWithValue }) => {
-    console.log(
-      "Fetching order details for userId:",
-      userId,
-      "orderId:",
-      orderId
-    );
     try {
       const token = localStorage.getItem("jwtToken");
-      if (!token) {
-        return rejectWithValue("JWT token is required");
-      }
+      if (!token) throw new Error("No authentication token found");
+
+      console.log("API call to:", `orders/${userId}/details/${orderId}`);
 
       const response = await axios.get(
         `https://myntra-clone-backend-nine.vercel.app/api/orders/${userId}/details/${orderId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
+      console.log("API response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("API call failed:", error);
-      return rejectWithValue(
-        error.response?.data || "Failed to fetch order details"
-      );
+      console.error("API error:", error.response?.data || error.message);
+      return rejectWithValue({
+        message: error.response?.data?.error || "Failed to fetch order details",
+        status: error.response?.status,
+      });
     }
   }
 );
-
 
 // Async thunk to place a new order
 export const placeOrder = createAsyncThunk(
   "order/placeOrder",
   async ({ userId, products, totalAmount }, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("jwtToken"); // Get the token here!
+
+      if (!token) {
+        console.error("JWT token not found in localStorage");
+        return rejectWithValue("Unauthorized, JWT token is required");
+      }
+
       if (!userId || !products || !totalAmount) {
         return rejectWithValue("Missing required fields");
       }
 
       const response = await axios.post(
         `https://myntra-clone-backend-nine.vercel.app/api/orders/${userId}/place-order`,
-        { products, totalAmount }
+        { products, totalAmount },
+        {
+          // Add headers here
+          headers: {
+            Authorization: `Bearer ${token}`, // Send token with request
+          },
+        }
       );
 
       return response.data;

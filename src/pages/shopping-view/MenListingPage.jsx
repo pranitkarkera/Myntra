@@ -6,11 +6,9 @@ import { fetchAllCategories } from "../../reducer/categoriesSlice";
 import {
   addItemToWishlist,
   removeItemFromWishlist,
-  fetchWishlist, // Import fetchWishlist
+  fetchWishlist,
 } from "../../reducer/wishlistSlice";
-import {
-  addItemToBag, // Import addItemToBag
-} from "../../reducer/shoppingBagSlice";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./ProductListingPage.css";
 import CategoryFilterComponent from "../../components/filter/CategoryFilterComponent";
@@ -62,6 +60,22 @@ const MenListingPage = () => {
   }, [dispatch, userId]);
 
   useEffect(() => {
+    console.log("Fetching cart for user:", userId);
+    const fetchData = async () => {
+      if (userId) {
+        try {
+          await dispatch(fetchCart(userId)).unwrap();
+          console.log("Cart fetched successfully");
+        } catch (error) {
+          console.error("Error fetching cart:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [dispatch, userId]);
+
+  useEffect(() => {
     dispatch(fetchAllProducts());
     dispatch(fetchAllCategories());
   }, [dispatch]);
@@ -80,11 +94,15 @@ const MenListingPage = () => {
 
     const matchesPriceRange =
       product.price >= priceRange.min && product.price <= priceRange.max;
-    
+
     const isMenProduct = product.gender === "MALE";
 
     return (
-      matchesSearchTerm && matchesCategory && matchesRating && matchesPriceRange && isMenProduct
+      matchesSearchTerm &&
+      matchesCategory &&
+      matchesRating &&
+      matchesPriceRange &&
+      isMenProduct
     );
   });
 
@@ -139,12 +157,13 @@ const MenListingPage = () => {
         await dispatch(
           addItemToWishlist({
             userId,
-            productId: product._id, // Ensure this matches ObjectId format
+            productId: parseInt(product.productId), // Convert to number if needed
             productName: product.productName,
             brandName: product.brandName,
             price: product.price,
             originalPrice: product.originalPrice,
             discountPercent: product.discountPercent,
+            images: product.images,
           })
         ).unwrap();
         toast.success("Item added to wishlist");
@@ -155,6 +174,7 @@ const MenListingPage = () => {
       toast.error(err.message || "Failed to update wishlist");
     }
   };
+
   const handleAddToBag = async (product) => {
     if (!userId) {
       console.error("User ID is undefined.");
@@ -165,17 +185,18 @@ const MenListingPage = () => {
     try {
       await dispatch(
         addItemToBag({
-          userId: userId,
-          productId: product.productId,
+          userId,
+          productId: parseInt(product.productId),
           productName: product.productName,
           brandName: product.brandName,
           price: product.price,
           originalPrice: product.originalPrice,
           discountPercent: product.discountPercent,
-          // Add other necessary fields here
+          images: product.images,
         })
       ).unwrap();
       toast.success("Item added to bag");
+      dispatch(fetchCart(userId)); // Dispatch fetchCart after adding item
     } catch (err) {
       toast.error(err.message || "Failed to add item to bag");
     }

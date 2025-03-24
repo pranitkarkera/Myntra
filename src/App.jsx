@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/homepage-view/HomePage";
@@ -18,22 +17,12 @@ import CheckoutPage from "./pages/checkout-view/CheckoutPage";
 import EditProfilePage from "./pages/profile-view/EditProfilePage";
 import OrderHistoryPage from "./pages/order-view/OrderHistoryPage";
 import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
-import RefreshHandler from "./components/RefreshHandler";
-import NotFound from "./components/NotFound";
+import RefreshHandler from "./components/RefreshHandler"; // Ensure this is imported
+import NotFound from "./components/NotFound"; // Ensure this is imported
+import PrivateRoute from "./components/PrivateRoute"; // Ensure this is imported
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const PrivateRoute = ({ element }) => {
-    return isAuthenticated ? element : <Navigate to="/login" />;
-  };
-
-  const handleLogout = () => {
-    // Remove token from localStorage
-    localStorage.removeItem("jwtToken");
-    // Set isAuthenticated to false
-    setIsAuthenticated(false);
-  };
 
   return (
     <Router>
@@ -41,33 +30,13 @@ function App() {
         <Header />
         <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
         <Routes>
+          {/* Public Routes */}
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/all-listing-page" element={<ProductListingPage />} />
           <Route
             path="/products/:productId"
             element={<ProductViewCardPage />}
           />
-          <Route
-            path="/men-listing-page"
-            element={<PrivateRoute element={<MenListingPage />} />}
-          />
-          <Route
-            path="/women-listing-page"
-            element={<PrivateRoute element={<WomenListingPage />} />}
-          />
-          <Route
-            path="/kids-listing-page"
-            element={<PrivateRoute element={<KidsListingPage />} />}
-          />
-          <Route
-            path="/wishlist-page"
-            element={<PrivateRoute element={<WishlistPage />} />}
-          />
-          <Route
-            path="/checkout"
-            element={<PrivateRoute element={<CheckoutPage />} />}
-          />
-          <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/signup" element={<RegisterProfilePage />} />
           <Route
             path="/login"
@@ -75,24 +44,35 @@ function App() {
               <LoginProfilePage setIsAuthenticated={setIsAuthenticated} />
             }
           />
-          <Route
-            path="/profile-page/:userId"
-            element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />}
-          />
-          <Route
-            path="/edit-profile/:userId"
-            element={
-              <EditProfilePage setIsAuthenticated={setIsAuthenticated} />
-            }
-          />
-          <Route
-            path="/order-history/:userId"
-            element={<PrivateRoute element={<OrderHistoryPage />} />}
-          />
-          <Route
-            path="/order-details/:userId/details/:orderId"
-            element={<PrivateRoute element={<OrderDetailsPage />} />}
-          />
+
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+            <Route path="/men-listing-page" element={<MenListingPage />} />
+            <Route path="/women-listing-page" element={<WomenListingPage />} />
+            <Route path="/kids-listing-page" element={<KidsListingPage />} />
+            <Route path="/wishlist-page" element={<WishlistPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route
+              path="/profile-page/:userId"
+              element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />}
+            />
+            <Route
+              path="/edit-profile/:userId"
+              element={
+                <EditProfilePage setIsAuthenticated={setIsAuthenticated} />
+              }
+            />
+            <Route
+              path="/order-history/:userId"
+              element={<OrderHistoryPage />}
+            />
+            <Route
+              path="/order-details/:userId/details/:orderId"
+              element={<OrderDetailsPage />}
+            />
+          </Route>
+
+          {/* Catch-All Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

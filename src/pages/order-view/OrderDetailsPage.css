@@ -1,0 +1,38 @@
+/* OrderDetailsPage.css */
+.order-details-container {
+    font-family: 'Arial', sans-serif;
+  }
+
+  .order-details-title {
+    color: #333;
+  }
+
+  .order-details-value {
+    font-weight: normal;
+    margin-left: 5px;
+  }
+
+  .order-details-status {
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    color: white;
+  }
+
+  .status-pending {
+    background-color: #ffc107; /* Yellow */
+  }
+
+  .status-shipped {
+    background-color: #17a2b8; /* Info */
+  }
+
+  .status-delivered {
+    background-color: #28a745; /* Green */
+  }
+
+  .list-group-item {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+  }

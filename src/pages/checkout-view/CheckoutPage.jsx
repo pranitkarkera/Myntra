@@ -55,6 +55,11 @@ const CheckoutPage = () => {
       return;
     }
 
+    if (!userId) {
+      toast.error("User ID not available. Please log in again.");
+      return;
+    }
+
     const orderData = {
       userId: userId,
       addressId: selectedAddressId,
