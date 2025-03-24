@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/homepage-view/HomePage";
 import ProductListingPage from "./pages/shopping-view/ProductListingPage";
@@ -17,9 +17,9 @@ import CheckoutPage from "./pages/checkout-view/CheckoutPage";
 import EditProfilePage from "./pages/profile-view/EditProfilePage";
 import OrderHistoryPage from "./pages/order-view/OrderHistoryPage";
 import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
-import RefreshHandler from "./components/RefreshHandler"; // Ensure this is imported
-import NotFound from "./components/NotFound"; // Ensure this is imported
-import PrivateRoute from "./components/PrivateRoute"; // Ensure this is imported
+import RefreshHandler from "./components/RefreshHandler";
+import NotFound from "./components/NotFound";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,7 +30,8 @@ function App() {
         <Header />
         <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
         <Routes>
-          {/* Public Routes */}
+
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/all-listing-page" element={<ProductListingPage />} />
           <Route
@@ -45,7 +46,7 @@ function App() {
             }
           />
 
-          {/* Protected Routes */}
+
           <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
             <Route path="/men-listing-page" element={<MenListingPage />} />
             <Route path="/women-listing-page" element={<WomenListingPage />} />
@@ -72,7 +73,7 @@ function App() {
             />
           </Route>
 
-          {/* Catch-All Route */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

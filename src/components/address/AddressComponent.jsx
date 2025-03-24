@@ -132,7 +132,6 @@ const AddressComponent = ({ onAddressAdded, onAddressSelected }) => {
     <div className="container mt-4">
       <h5 className="fw-bold">Select Delivery Address</h5>
 
-      {/* List of Addresses */}
       {addresses.length > 0 ? (
         <div className="row">
           {addresses.map((addr) => (
@@ -184,7 +183,6 @@ const AddressComponent = ({ onAddressAdded, onAddressSelected }) => {
         <p>No addresses found.</p>
       )}
 
-      {/* Add New Address Button */}
       <button
         className="btn btn-outline-secondary w-100 mt-3"
         onClick={handleAddNewAddress}
@@ -192,7 +190,6 @@ const AddressComponent = ({ onAddressAdded, onAddressSelected }) => {
         + Add New Address
       </button>
 
-      {/* Modal Popup */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>

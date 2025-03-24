@@ -4,14 +4,14 @@ import {
   removeItemFromBag,
   updateItemQuantityInBag,
   fetchCart
-} from "../../reducer/shoppingBagSlice"; // Import async thunks
+} from "../../reducer/shoppingBagSlice";
 import { fetchWishlist } from "../../reducer/wishlistSlice";
 import { addItemToWishlist } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
 
 const AddToBagComponent = () => {
   const dispatch = useDispatch();
-  const bagItems = useSelector((state) => state.shoppingBag.items || []); // Ensure fallback to empty array
+  const bagItems = useSelector((state) => state.shoppingBag.items || []);
   const user = useSelector((state) => state.user.user);
   const userId = user ? user._id : null;
 
@@ -95,38 +95,35 @@ const AddToBagComponent = () => {
     <div className="container mt-4">
       <h5 className="fw-bold">Your Shopping Bag</h5>
 
-      {/* List of Bag Items */}
       {Array.isArray(bagItems) && bagItems.length > 0 ? (
         <div
-          className="row overflow-y-auto" // Enable vertical scrolling
-          style={{ maxHeight: "70vh" }} // Set a max height for the scrollable container
+          className="row overflow-y-auto" 
+          style={{ maxHeight: "70vh" }}
         >
           {bagItems.map((product) => (
             <div
               key={product.productId}
-              className="col-12 mb-4" // Full width for each card
+              className="col-12 mb-4"
             >
               <div className="card h-100">
                 <div className="row g-0 h-100">
-                  {/* Image Column */}
+        
                   <div className="col-12 col-md-4">
                     <img
                       src={
                         product.images?.[0] || "https://via.placeholder.com/150"
-                      } // Fallback image
-                      className="img-fluid rounded-start h-100 w-100" // Ensure image fills the container
+                      } 
+                      className="img-fluid rounded-start h-100 w-100"
                       alt={product.productName || "Product image"}
-                      style={{ objectFit: "cover" }} // Maintain aspect ratio
+                      style={{ objectFit: "cover" }}
                     />
                   </div>
 
-                  {/* Content Column */}
                   <div className="col-12 col-md-8">
                     <div className="card-body d-flex flex-column h-100">
                       <h5 className="card-title">{product.brandName}</h5>
                       <p className="card-text">{product.productName}</p>
 
-                      {/* Quantity Selector */}
                       <div className="mt-auto">
                         <select
                           className="form-select w-50 mb-3"
@@ -143,7 +140,6 @@ const AddToBagComponent = () => {
                         </select>
                       </div>
 
-                      {/* Footer with Price and Buttons */}
                       <div className="card-footer bg-transparent border-0 p-0">
                         <div className="d-flex justify-content-between align-items-center">
                           <p className="fw-bold fs-5 mb-0">

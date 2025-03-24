@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
 
-  // Check if the current route requires a fixed footer
   const isFixedFooter = [
     location.pathname === "/",
     location.pathname === "/checkout",

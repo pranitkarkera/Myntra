@@ -18,7 +18,6 @@ const Header = () => {
   console.log("User",user)
   const userId = user?._id || null;
 
-  // Fetch wishlist when userId is available
   useEffect(() => {
     if (userId) {
       dispatch(fetchWishlist(userId));
@@ -35,7 +34,6 @@ const Header = () => {
         console.log("Bag items updated:", bagItems);
       }, [bagItems]);
 
-  // Handle search input change
   const handleSearch = (e) => {
     const searchValue = e.target.value.toLowerCase();
     dispatch(setSearchTerm(searchValue));
