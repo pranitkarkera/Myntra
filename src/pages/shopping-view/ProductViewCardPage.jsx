@@ -7,7 +7,8 @@ import { IoMdStar } from "react-icons/io";
 import { FaRupeeSign } from "react-icons/fa";
 import { Carousel } from "react-bootstrap";
 import {
-  addItemToBag, // Import addItemToBag
+  addItemToBag,
+  fetchCart,
 } from "../../reducer/shoppingBagSlice";
 import {
   addItemToWishlist,
@@ -16,7 +17,6 @@ import {
 } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
 import { setSize } from "../../reducer/sizeSlice";
-import { jwtDecode } from "jwt-decode"; // Import jwtDecode
 
 const ProductViewCardPage = () => {
   const { productId } = useParams();
@@ -32,32 +32,12 @@ const ProductViewCardPage = () => {
   let userId = user ? user._id : null;
 
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        userId = decoded._id; // Assuming _id is the field for userId in your JWT payload
-      } catch (error) {
-        console.error("Error decoding JWT token:", error);
-        // Handle token decoding error (e.g., token is invalid)
-        localStorage.removeItem("jwtToken"); // Remove invalid token
-        toast.error("Invalid session. Please log in again.");
-        userId = null;
-        // Redirect to login page if necessary
-      }
-    }
+    dispatch(fetchProductById(productId));
     if (userId) {
       dispatch(fetchWishlist(userId));
     }
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchProductById(productId));
-  }, [dispatch, productId]);
-
-  useEffect(() => {
     dispatch(setSize(null)); // Reset selected size when visiting a new product
-  }, [product, dispatch]);
+  }, [dispatch, productId, userId]);
 
   const handleSizeSelect = (size) => {
     dispatch(setSize(size));
@@ -91,6 +71,7 @@ const ProductViewCardPage = () => {
             price: product.price,
             originalPrice: product.originalPrice,
             discountPercent: product.discountPercent,
+            images: product.images,
           })
         ).unwrap();
         toast.success("Item added to wishlist");
@@ -110,17 +91,19 @@ const ProductViewCardPage = () => {
     try {
       await dispatch(
         addItemToBag({
-          userId: userId,
+          userId,
           productId: product.productId,
           productName: product.productName,
           brandName: product.brandName,
           price: product.price,
           originalPrice: product.originalPrice,
           discountPercent: product.discountPercent,
-          selectedSize: sizeToAdd, // Include selectedSize
+          images: product.images,
+          selectedSize: sizeToAdd,
         })
       ).unwrap();
       toast.success("Item added to bag!");
+      dispatch(fetchCart(userId));
     } catch (error) {
       console.error("Error adding to bag:", error);
       toast.error(error.message || "Failed to add item to bag");
@@ -129,7 +112,10 @@ const ProductViewCardPage = () => {
 
   if (loading) {
     return (
-      <div className="text-center">
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -173,7 +159,7 @@ const ProductViewCardPage = () => {
   } = product;
 
   return (
-    <div className="container mt-5">
+    <div className="mid-section container">
       <div className="row">
         <div className="col-md-6">
           {images.length > 0 ? (

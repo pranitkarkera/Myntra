@@ -123,7 +123,7 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="mid-section container">
       {checkoutStep === "bag" && (
         <>
           {Array.isArray(bagItems) && bagItems.length === 0 ? (

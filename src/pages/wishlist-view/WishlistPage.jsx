@@ -103,12 +103,13 @@ const WishlistPage = () => {
   };
 
   return (
-    <div className="container">
+    <div className="mid-section container">
       {wishlistItems.length === 0 ? (
         <div className="text-center py-5 my-5">
           <img
             src="https://img.icons8.com/?size=100&id=6AT50ANS7K0O&format=png&color=000000"
             className="mb-4"
+            alt="Empty Wishlist"
           />
           <h2 className="fw-bolder pb-3">YOUR WISHLIST IS EMPTY</h2>
           <p className="text-muted fs-5 pb-4">
@@ -117,7 +118,7 @@ const WishlistPage = () => {
           </p>
           <Link
             className="btn btn-outline-primary fw-semibold py-3 fs-5"
-            to="/product-listing-page"
+            to="/all-listing-page"
           >
             Continue Shopping
           </Link>

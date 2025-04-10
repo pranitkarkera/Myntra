@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserById } from "./reducer/userSlice";
 import HomePage from "./pages/homepage-view/HomePage";
 import ProductListingPage from "./pages/shopping-view/ProductListingPage";
 import MenListingPage from "./pages/shopping-view/MenListingPage";
@@ -17,20 +19,32 @@ import CheckoutPage from "./pages/checkout-view/CheckoutPage";
 import EditProfilePage from "./pages/profile-view/EditProfilePage";
 import OrderHistoryPage from "./pages/order-view/OrderHistoryPage";
 import OrderDetailsPage from "./pages/order-view/OrderDetailsPage";
-import RefreshHandler from "./components/RefreshHandler";
+// import RefreshHandler from "./components/RefreshHandler";
 import NotFound from "./components/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user); // Get user from Redux store
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      const userId = JSON.parse(localStorage.getItem("user"))?._id;
+      if (userId) {
+        dispatch(fetchUserById(userId)); // Fetch user data from backend
+      }
+    }
+  }, [dispatch]);
+
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <Router>
+      <Header />
       <div>
-        <Header />
-        <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
+        {/* <RefreshHandler setIsAuthenticated={setIsAuthenticated} /> */}
         <Routes>
-
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/all-listing-page" element={<ProductListingPage />} />
@@ -42,12 +56,11 @@ function App() {
           <Route
             path="/login"
             element={
-              <LoginProfilePage setIsAuthenticated={setIsAuthenticated} />
+              <LoginProfilePage/>
             }
           />
 
-
-          <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+          <Route element={<PrivateRoute />}>
             <Route path="/men-listing-page" element={<MenListingPage />} />
             <Route path="/women-listing-page" element={<WomenListingPage />} />
             <Route path="/kids-listing-page" element={<KidsListingPage />} />
@@ -55,12 +68,12 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route
               path="/profile-page/:userId"
-              element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />}
+              element={<ProfilePage />}
             />
             <Route
               path="/edit-profile/:userId"
               element={
-                <EditProfilePage setIsAuthenticated={setIsAuthenticated} />
+                <EditProfilePage />
               }
             />
             <Route
@@ -73,11 +86,10 @@ function App() {
             />
           </Route>
 
-
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </Router>
   );
 }
