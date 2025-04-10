@@ -27,7 +27,7 @@ const AddToBagComponent = () => {
       await dispatch(
         removeItemFromBag({ userId, productId: product.productId })
       ).unwrap();
-      toast.success("Item moved to wishlist");
+      toast.success("Item removed from bag");
       dispatch(fetchCart(userId));
     } catch (err) {
       toast.error(err.message || "Failed to move item");

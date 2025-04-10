@@ -123,12 +123,11 @@ const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.loading = false;
-      state.error = null;
       localStorage.removeItem("jwtToken");
-      localStorage.removeItem("user"); 
+      localStorage.removeItem("user");
     },
   },
+  
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -150,6 +149,7 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // Save user data
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -162,6 +162,7 @@ const userSlice = createSlice({
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload)); // Save user data
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;
@@ -187,7 +188,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = null;
         localStorage.removeItem("jwtToken");
-        localStorage.removeItem("user"); 
+        localStorage.removeItem("user");
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;

@@ -118,7 +118,7 @@ const WishlistPage = () => {
           </p>
           <Link
             className="btn btn-outline-primary fw-semibold py-3 fs-5"
-            to="/product-listing-page"
+            to="/all-listing-page"
           >
             Continue Shopping
           </Link>
