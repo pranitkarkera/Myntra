@@ -60,7 +60,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="mid-section container mt-5">
       <h3>Account</h3>
       <hr />
       <div className="row align-items-center border border-1 bg-light p-3">

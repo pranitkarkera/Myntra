@@ -103,7 +103,7 @@ const WishlistPage = () => {
   };
 
   return (
-    <div className="mid-section container">
+    <div className="mid-section container py-2">
       {wishlistItems.length === 0 ? (
         <div className="text-center py-5 my-5">
           <img
