@@ -129,7 +129,10 @@ const ProductViewCardPage = () => {
 
   if (loading) {
     return (
-      <div className="text-center">
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -173,7 +176,7 @@ const ProductViewCardPage = () => {
   } = product;
 
   return (
-    <div className="container mt-5">
+    <div className="mid-section container">
       <div className="row">
         <div className="col-md-6">
           {images.length > 0 ? (

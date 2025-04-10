@@ -6,19 +6,19 @@ html, body, #root {
 }
 
 /* Main content pushes the footer down */
-main {
+/* main {
   flex: 1;
   min-height: 100vh;
-}
+} */
 
 /* Footer appears at the bottom of the page */
-footer {
+.footer {
   width: 100%;
-  position: relative; /* Keeps it in document flow */
+  position: absolute; /* Keeps it in document flow */
   bottom: 0;
+  background-color: lightgray;
 }
 
-/* Fixed footer for specific pages */
 .fixed-footer {
   position: fixed !important;
   bottom: 0;
@@ -36,4 +36,10 @@ body {
 
 * {
     box-sizing: inherit;
+}
+
+@media (min-width: 320px) and (max-width: 490px) {
+  .mid-section{
+    margin: 0 0 12rem 0;
+  }
 }

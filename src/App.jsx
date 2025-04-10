@@ -26,11 +26,10 @@ function App() {
 
   return (
     <Router>
+      <Header />
       <div>
-        <Header />
         <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
         <Routes>
-
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/all-listing-page" element={<ProductListingPage />} />
@@ -45,7 +44,6 @@ function App() {
               <LoginProfilePage setIsAuthenticated={setIsAuthenticated} />
             }
           />
-
 
           <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
             <Route path="/men-listing-page" element={<MenListingPage />} />
@@ -73,11 +71,10 @@ function App() {
             />
           </Route>
 
-
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Footer />
       </div>
+      <Footer />
     </Router>
   );
 }

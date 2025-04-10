@@ -22,19 +22,20 @@ const Footer = () => {
         position: isFixedFooter ? "fixed" : "relative",
         bottom: isFixedFooter ? "0" : "auto",
       }}
+      // className="footer"
     >
       <div className="container-fluid text-center py-4">
         <div className="row">
-          <div className="col">
+          <div className="col-sm-12 col-md-4">
             <p>
               In case of any concern,{" "}
               <span className="text-primary">Contact Us</span>
             </p>
           </div>
-          <div className="col">
+          <div className="col-sm-12 col-md-4">
             <p>&copy; 2025 www.myntra.com. All rights reserved.</p>
           </div>
-          <div className="col">
+          <div className="col-sm-12 col-md-4">
             <p>A Flipkart company</p>
           </div>
         </div>

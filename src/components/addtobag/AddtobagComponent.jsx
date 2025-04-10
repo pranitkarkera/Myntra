@@ -92,27 +92,20 @@ const AddToBagComponent = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="mid-section container">
       <h5 className="fw-bold">Your Shopping Bag</h5>
 
       {Array.isArray(bagItems) && bagItems.length > 0 ? (
-        <div
-          className="row overflow-y-auto" 
-          style={{ maxHeight: "70vh" }}
-        >
+        <div className="row overflow-y-auto" style={{ maxHeight: "70vh" }}>
           {bagItems.map((product) => (
-            <div
-              key={product.productId}
-              className="col-12 mb-4"
-            >
+            <div key={product.productId} className="col-12 mb-4">
               <div className="card h-100">
                 <div className="row g-0 h-100">
-        
                   <div className="col-12 col-md-4">
                     <img
                       src={
                         product.images?.[0] || "https://via.placeholder.com/150"
-                      } 
+                      }
                       className="img-fluid rounded-start h-100 w-100"
                       alt={product.productName || "Product image"}
                       style={{ objectFit: "cover" }}

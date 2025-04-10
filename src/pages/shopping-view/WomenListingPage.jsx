@@ -222,7 +222,14 @@ const WomenListingPage = () => {
           </button>
         </div>
         <div className="col-md-9">
-          {loading && <p>Loading products...</p>}
+          {loading && (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "100vh" }}
+            >
+              <p>Loading products...</p>
+            </div>
+          )}
           {error && (
             <div>
               <p className="text-danger">Error: {error}</p>
