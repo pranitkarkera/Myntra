@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   removeItemFromBag,
@@ -14,7 +14,6 @@ const AddToBagComponent = () => {
   const bagItems = useSelector((state) => state.shoppingBag.items || []);
   const user = useSelector((state) => state.user.user);
   const userId = user ? user._id : null;
-
 
   const handleRemoveFromBag = async (product) => {
     if (!userId) {
@@ -34,7 +33,9 @@ const AddToBagComponent = () => {
     }
   };
 
-  const handleQuantityChange = async (id, event) => {
+  const handleQuantityChange = useCallback(async (id, event) => {
+    event.preventDefault();
+
     const newQuantity = parseInt(event.target.value);
 
     if (!isNaN(newQuantity) && newQuantity > 0) {
@@ -58,7 +59,7 @@ const AddToBagComponent = () => {
         toast.error(err.message || "Failed to update quantity");
       }
     }
-  };
+  }, [dispatch, userId]);
 
   const moveToWishlist = async (product) => {
     if (!userId) {
@@ -118,19 +119,21 @@ const AddToBagComponent = () => {
                       <p className="card-text">{product.productName}</p>
 
                       <div className="mt-auto">
-                        <select
-                          className="form-select w-50 mb-3"
-                          value={product.quantity || 1}
-                          onChange={(e) =>
-                            handleQuantityChange(product.productId, e)
-                          }
-                        >
-                          {[1, 2, 3, 4, 5].map((qty) => (
-                            <option key={qty} value={qty}>
-                              Qty: {qty}
-                            </option>
-                          ))}
-                        </select>
+                        <form onSubmit={(e) => e.preventDefault()}>
+                          <select
+                            className="form-select w-50 mb-3"
+                            value={product.quantity || 1}
+                            onChange={(e) =>
+                              handleQuantityChange(product.productId, e)
+                            }
+                          >
+                            {[1, 2, 3, 4, 5].map((qty) => (
+                              <option key={qty} value={qty}>
+                                Qty: {qty}
+                              </option>
+                            ))}
+                          </select>
+                        </form>
                       </div>
 
                       <div className="card-footer bg-transparent border-0 p-0">

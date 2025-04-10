@@ -6,17 +6,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { IoMdStar } from "react-icons/io";
 import { FaRupeeSign } from "react-icons/fa";
 import { Carousel } from "react-bootstrap";
-import {
-  addItemToBag,
-  fetchCart,
-} from "../../reducer/shoppingBagSlice";
+import { addItemToBag, fetchCart } from "../../reducer/shoppingBagSlice";
 import {
   addItemToWishlist,
   removeItemFromWishlist,
   fetchWishlist,
 } from "../../reducer/wishlistSlice";
 import { toast } from "react-toastify";
-import { setSize } from "../../reducer/sizeSlice";
 
 const ProductViewCardPage = () => {
   const { productId } = useParams();
@@ -25,7 +21,6 @@ const ProductViewCardPage = () => {
   const loading = useSelector((state) => state.productById.loading);
   const error = useSelector((state) => state.productById.error);
   const wishlistItems = useSelector((state) => state.wishlist.items);
-  const selectedSize = useSelector((state) => state.size.selectedSize);
 
   // Get userId from Redux or decode from token
   const user = useSelector((state) => state.user.user);
@@ -36,12 +31,7 @@ const ProductViewCardPage = () => {
     if (userId) {
       dispatch(fetchWishlist(userId));
     }
-    dispatch(setSize(null)); // Reset selected size when visiting a new product
   }, [dispatch, productId, userId]);
-
-  const handleSizeSelect = (size) => {
-    dispatch(setSize(size));
-  };
 
   const handleToggleWishlist = async (event) => {
     event.stopPropagation();
@@ -87,7 +77,6 @@ const ProductViewCardPage = () => {
       toast.error("Please log in to add items to your bag.");
       return;
     }
-    const sizeToAdd = selectedSize || "S";
     try {
       await dispatch(
         addItemToBag({
@@ -99,7 +88,6 @@ const ProductViewCardPage = () => {
           originalPrice: product.originalPrice,
           discountPercent: product.discountPercent,
           images: product.images,
-          selectedSize: sizeToAdd,
         })
       ).unwrap();
       toast.success("Item added to bag!");
@@ -154,7 +142,6 @@ const ProductViewCardPage = () => {
     price,
     originalPrice,
     discountPercent,
-    size,
     description,
   } = product;
 
@@ -202,21 +189,6 @@ const ProductViewCardPage = () => {
           <p className="text-success fw-semibold fs-6">
             inclusive of all taxes
           </p>
-          <p className="fw-bold">SELECT SIZE</p>
-          {size.map((e) => (
-            <button
-              className={`rounded-pill ${
-                selectedSize === e
-                  ? "bg-white text-danger border border-danger"
-                  : "bg-white border"
-              }`}
-              style={{ width: "40px", height: "40px", margin: "5px" }}
-              key={e}
-              onClick={() => handleSizeSelect(e)}
-            >
-              {e}
-            </button>
-          ))}
           <p>{description}</p>
           <button
             className="btn btn-danger"
