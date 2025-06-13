@@ -7,7 +7,7 @@ Built with a React frontend, Express/Node backend, MongoDB database, and JWT-bas
 
 ## Demo Link
 
-[Live Demo]((https://myntra-puce-ten.vercel.app/login)  
+[Live Demo](https://myntra-puce-ten.vercel.app/login)  
 
 ---
 
